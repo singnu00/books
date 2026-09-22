@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우리 반 책장 | 독서왕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF7EF;
+    --card:#FFFEFA;
+    --ink:#55493C;
+    --ink-soft:#A0937E;
+    --ink-faint:#CBBFA9;
+    --line:#EFE7D6;
+    --accent:#C9B79C;
+    --accent-dark:#A9926F;
+    --cover-bg:#F2EADA;
+    --danger:#B0725E;
+    --success:#7A8B6F;
+    --serif:'Noto Serif KR', serif;
+    --sans:-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  img{max-width:100%;display:block;}
+  button{font-family:inherit;cursor:pointer;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  /* ---------- HERO ---------- */
+  .hero{max-width:900px;margin:0 auto;padding:34px 24px 10px;position:relative;}
+  #authArea{
+    position:absolute;top:34px;right:24px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .home-link{
+    position:absolute;top:34px;left:24px;font-size:0.82rem;color:var(--ink-faint);text-decoration:none;
+  }
+  .home-link:hover{color:var(--ink-soft);}
+  .auth-link{
+    background:transparent;border:1px solid var(--line);color:var(--ink-soft);
+    padding:8px 15px;border-radius:999px;font-size:0.82rem;
+    display:flex;align-items:center;gap:6px;
+    text-decoration:none;cursor:pointer;
+  }
+  .auth-link:hover{border-color:var(--accent);color:var(--accent-dark);}
+  .profile-chip{display:flex;align-items:center;gap:8px;}
+  .profile-avatar{
+    width:32px;height:32px;border-radius:50%;background:var(--cover-bg);color:var(--accent-dark);
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:0.85rem;
+    flex-shrink:0;border:1px solid var(--line);overflow:hidden;
+  }
+  .profile-avatar img{width:100%;height:100%;object-fit:cover;}
+  .profile-text{font-size:0.8rem;color:var(--ink-soft);line-height:1.3;}
+  .profile-text b{color:var(--ink);font-weight:600;}
+  .profile-logout{background:none;border:none;color:var(--ink-faint);font-size:0.74rem;text-decoration:underline;padding:0;}
+  .profile-logout:hover{color:var(--ink-soft);}
+  .shelf-illust{display:block;margin:0 auto 22px;width:100%;max-width:560px;}
+  .hero h1{font-family:var(--serif);font-weight:500;text-align:center;font-size:clamp(1.6rem,3vw + 1rem,2.1rem);margin:0 0 8px;}
+  .hero .sub{text-align:center;font-size:0.9rem;color:var(--ink-faint);margin:0 0 8px;}
+
+  /* ---------- FILTER BAR ---------- */
+  .filter-wrap{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);}
+  .filter-bar{
+    max-width:900px;margin:0 auto;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  .filter-tabs{display:flex;gap:20px;overflow-x:auto;scrollbar-width:none;}
+  .filter-tabs::-webkit-scrollbar{display:none;}
+  .filter-tab{background:none;border:none;color:var(--ink-faint);font-size:0.9rem;padding:4px 2px 8px;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0;}
+  .filter-tab.active{color:var(--accent-dark);border-bottom-color:var(--accent);font-weight:500;}
+  #favToggle{
+    flex-shrink:0;background:none;border:1px solid var(--line);color:var(--ink-soft);
+    font-size:0.82rem;padding:6px 13px;border-radius:999px;display:flex;align-items:center;gap:5px;
+  }
+  #favToggle.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+  /* ---------- MAIN LIST ---------- */
+  main{max-width:900px;margin:0 auto;padding:20px 24px 100px;}
+  .empty{text-align:center;padding:70px 20px;color:var(--ink-soft);}
+  .empty .big{font-size:2.2rem;margin-bottom:10px;}
+
+  .row{display:flex;gap:26px;align-items:flex-start;padding:28px 0;border-top:1px solid var(--line);position:relative;}
+  .row:last-child{border-bottom:1px solid var(--line);}
+  .num{font-family:var(--serif);font-size:0.8rem;color:var(--ink-faint);width:22px;flex-shrink:0;padding-top:4px;}
+
+  .cover-wrap{position:relative;flex-shrink:0;}
+  .cover{width:88px;aspect-ratio:2/3;object-fit:cover;background:var(--cover-bg);}
+  .cover-placeholder{
+    width:88px;aspect-ratio:2/3;background:var(--cover-bg);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;color:#fff;font-family:var(--serif);font-size:0.68rem;
+    text-align:center;padding:6px 4px;line-height:1.3;
+  }
+  .ribbon{
+    position:absolute;top:-6px;right:10px;width:18px;height:26px;
+    background:var(--ink-faint);opacity:0.55;
+    clip-path:polygon(0 0,100% 0,100% 100%,50% 76%,0 100%);
+    border:none;padding:0;
+  }
+  .ribbon.active{background:var(--accent);opacity:1;}
+  .ribbon:hover{opacity:0.85;}
+
+  .row-body{flex:1;min-width:0;}
+  .row-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .cat{font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;font-weight:500;}
+  .row h3{font-family:var(--serif);font-weight:500;font-size:1.15rem;margin:0 0 2px;cursor:pointer;}
+  .row .author{font-size:0.83rem;color:var(--ink-faint);margin:0 0 10px;}
+  .row .sum{font-size:0.9rem;line-height:1.6;color:var(--ink);margin:0;cursor:pointer;}
+
+  .admin-actions{display:flex;gap:6px;flex-shrink:0;}
+  .icon-btn{background:var(--card);border:1px solid var(--line);width:26px;height:26px;border-radius:50%;font-size:0.75rem;display:flex;align-items:center;justify-content:center;}
+  .icon-btn:hover{border-color:var(--accent);}
+
+  /* ---------- ADMIN BAR / FAB ---------- */
+  .admin-bar{position:sticky;top:0;z-index:25;background:var(--ink);color:#fff;font-size:0.83rem;}
+  .admin-bar-inner{max-width:900px;margin:0 auto;padding:9px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .admin-bar button{background:transparent;border:1px solid rgba(255,255,255,0.35);color:#fff;padding:5px 12px;border-radius:999px;font-size:0.76rem;}
+  .admin-bar button:hover{background:rgba(255,255,255,0.12);}
+  .admin-bar-actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+  .fab{position:fixed;right:22px;bottom:24px;background:var(--accent);color:#fff;border:none;border-radius:999px;padding:14px 20px;font-size:0.92rem;display:flex;align-items:center;gap:8px;box-shadow:0 6px 16px rgba(59,46,35,0.25);z-index:30;}
+  .fab:hover{background:var(--accent-dark);}
+
+  /* ---------- MODALS ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(59,46,35,0.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;}
+  .hidden{display:none !important;}
+  .modal{background:var(--card);max-width:520px;width:100%;max-height:88vh;overflow-y:auto;border-radius:4px;padding:26px 24px;position:relative;border:1px solid var(--line);}
+  .modal h2{font-family:var(--serif);font-weight:500;margin:0 0 18px;font-size:1.3rem;}
+  .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.3rem;color:var(--ink-faint);line-height:1;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:0.8rem;color:var(--ink-soft);margin-bottom:6px;}
+  .field input[type=text],.field input[type=password],.field textarea,.field select{
+    width:100%;border:1px solid var(--line);background:#fff;padding:10px 11px;font-family:inherit;font-size:0.94rem;border-radius:2px;color:var(--ink);
+  }
+  .field textarea{resize:vertical;min-height:78px;}
+  .field input[type=file]{font-size:0.85rem;}
+  .cover-preview{width:64px;aspect-ratio:2/3;object-fit:cover;margin-top:8px;}
+  .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px;}
+  .btn{padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:0.86rem;}
+  .btn-primary{background:var(--line);border-color:var(--line);color:var(--ink-faint);cursor:not-allowed;}
+  .btn-primary.is-ready{background:var(--accent-dark);border-color:var(--accent-dark);color:#fff;cursor:pointer;}
+  .btn-primary.is-ready:hover{background:var(--ink);border-color:var(--ink);}
+  .btn-danger{background:#fff;border-color:var(--danger);color:var(--danger);}
+  .btn-danger:hover{background:var(--danger);color:#fff;}
+  .helper{font-size:0.78rem;color:var(--ink-soft);margin-top:8px;}
+
+  .member-row{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:12px 0;border-top:1px solid var(--line);
+  }
+  .member-row:last-child{border-bottom:1px solid var(--line);}
+  .member-info{font-size:0.88rem;}
+  .member-info .role{font-size:0.72rem;color:var(--ink-faint);margin-right:6px;}
+  .member-info .status{font-size:0.72rem;margin-left:6px;}
+  .member-info .status.pending{color:var(--danger);}
+  .member-info .status.approved{color:var(--success, #7A8B6F);}
+  .member-actions{display:flex;gap:6px;flex-shrink:0;}
+  .member-actions button{
+    font-size:0.76rem;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;
+  }
+  .member-actions .approve-btn{border-color:var(--accent);color:var(--accent-dark);}
+  .member-actions .revoke-btn{color:var(--ink-soft);}
+  .member-actions .delete-btn{color:var(--danger);border-color:var(--danger);}
+  .member-empty{text-align:center;color:var(--ink-faint);font-size:0.86rem;padding:24px 0;}
+
+  /* ---------- 게시판 (책 소개 글) ---------- */
+  .board{max-width:900px;margin:0 auto;padding:10px 24px 120px;}
+  .board-head{padding:32px 0 6px;border-top:1px solid var(--line);}
+  .board-head h2{font-family:var(--serif);font-weight:500;font-size:1.25rem;margin:0 0 4px;}
+  .board-head .sub{font-size:0.86rem;color:var(--ink-faint);margin:0;}
+  .post-empty{text-align:center;padding:50px 20px;color:var(--ink-soft);}
+
+  .post-card{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:20px 20px 16px;margin-top:16px;}
+  .post-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .post-cat-badge{display:inline-block;font-size:0.7rem;font-weight:600;letter-spacing:0.02em;color:var(--accent-dark);background:var(--cover-bg);padding:3px 9px;border-radius:999px;margin-bottom:8px;}
+  .post-card h3{font-family:var(--serif);font-weight:500;font-size:1.08rem;margin:0 0 2px;cursor:pointer;}
+  .post-card .author{font-size:0.82rem;color:var(--ink-faint);margin:0 0 10px;}
+  .post-card .desc{font-size:0.9rem;line-height:1.6;color:var(--ink);margin:0 0 12px;cursor:pointer;white-space:pre-wrap;}
+  .post-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:0.78rem;color:var(--ink-faint);border-top:1px solid var(--line);padding-top:10px;}
+  .post-writer{color:var(--ink-soft);}
+  .realname-tag{color:var(--ink-faint);font-weight:400;margin-left:4px;font-size:0.92em;}
+  .post-stats{display:flex;align-items:center;gap:14px;}
+  .heart-btn{background:none;border:none;font-size:0.86rem;color:var(--ink-faint);display:flex;align-items:center;gap:4px;padding:0;}
+  .heart-btn.active{color:var(--danger);}
+  .comment-count-btn{background:none;border:none;font-size:0.86rem;color:var(--ink-faint);display:flex;align-items:center;gap:4px;padding:0;}
+
+  .fab-post{right:22px;bottom:86px;}
+  .fab.fab-post{background:var(--ink);}
+  .fab.fab-post:hover{background:#3d332a;}
+
+  /* 게시글 상세(댓글 포함) 모달 */
+  .post-detail-cat{font-size:0.75rem;font-weight:600;color:var(--accent-dark);background:var(--cover-bg);display:inline-block;padding:3px 9px;border-radius:999px;margin-bottom:10px;}
+  .post-detail-author{font-size:0.85rem;color:var(--ink-faint);margin:2px 0 16px;}
+  .post-detail-desc{font-size:0.94rem;line-height:1.7;white-space:pre-wrap;margin:0 0 14px;}
+  .post-detail-actions{display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:16px;}
+  .post-delete-btn{margin-left:auto;background:none;border:none;color:var(--danger);font-size:0.78rem;text-decoration:underline;}
+
+  .comments-title{font-size:0.9rem;color:var(--ink-soft);margin:0 0 10px;}
+  .comment{padding:10px 0 4px;border-top:1px solid var(--line);}
+  .comment-author{font-size:0.82rem;font-weight:600;color:var(--ink);margin:0 0 3px;}
+  .comment-text{font-size:0.88rem;line-height:1.55;margin:0 0 6px;white-space:pre-wrap;}
+  .comment-reply-btn{background:none;border:none;font-size:0.74rem;color:var(--ink-faint);text-decoration:underline;padding:0;margin-bottom:6px;}
+  .reply-box{display:flex;gap:6px;margin:6px 0 10px;}
+  .reply-box textarea{flex:1;border:1px solid var(--line);border-radius:4px;padding:8px;font-family:inherit;font-size:0.84rem;resize:vertical;min-height:40px;}
+  .reply-box button{flex-shrink:0;background:var(--accent-dark);color:#fff;border:none;border-radius:999px;padding:0 14px;font-size:0.8rem;}
+  .comment-empty{color:var(--ink-faint);font-size:0.85rem;padding:8px 0;}
+  .comment-form{display:flex;gap:8px;margin-top:14px;}
+  .comment-form textarea{flex:1;border:1px solid var(--line);border-radius:4px;padding:9px 10px;font-family:inherit;font-size:0.88rem;resize:vertical;min-height:44px;}
+  .comment-form button{flex-shrink:0;background:var(--line);color:var(--ink-faint);border:none;border-radius:999px;padding:0 16px;font-size:0.85rem;cursor:not-allowed;}
+  .comment-form button.is-ready{background:var(--accent-dark);color:#fff;cursor:pointer;}
+
+  .detail-tabs{display:flex;gap:6px;margin:16px 0 18px;border-bottom:1px solid var(--line);}
+  .detail-tab-btn{
+    background:none;border:none;padding:8px 4px;margin-right:16px;font-size:0.86rem;color:var(--ink-faint);
+    border-bottom:2px solid transparent;
+  }
+  .detail-tab-btn.active{color:var(--ink);font-weight:600;border-bottom-color:var(--accent-dark);}
+  .detail-panel .field label{color:var(--ink-soft);}
+
+
+  .detail-cover{width:120px;margin-bottom:14px;background:var(--cover-bg);}
+  .detail-cat{font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;margin-bottom:8px;}
+  .detail-modal h2{font-size:1.5rem;}
+  .detail-author{color:var(--ink-faint);margin:-6px 0 14px;font-size:0.9rem;}
+  .detail-section{margin-bottom:16px;}
+  .detail-section h4{font-size:0.76rem;color:var(--ink-soft);margin:0 0 6px;font-weight:500;}
+  .detail-section p{margin:0;white-space:pre-wrap;}
+
+  footer{text-align:center;padding:20px;font-size:0.78rem;color:var(--ink-faint);}
+
+  @media (max-width:480px){
+    main{padding:16px 16px 100px;}
+    .row{gap:16px;}
+    .cover, .cover-placeholder{width:70px;}
+    #authArea{position:static;justify-content:center;margin:14px auto 0;}
+    .home-link{position:static;display:block;text-align:center;margin-bottom:10px;}
+    .hero{padding:24px 16px 6px;}
+  }
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;scroll-behavior:auto !important;}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a href="index.html" class="home-link">← 홈</a>
+  <div id="authArea"></div>
+  <svg class="shelf-illust" viewBox="0 0 560 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="책이 꽂힌 책장 일러스트">
+    <rect x="30" y="128" width="500" height="10" fill="#B9A386"/>
+    <g>
+      <rect x="45" y="55" width="26" height="75" fill="#F1E9D8"/>
+      <rect x="45" y="55" width="26" height="8" fill="#E3D5BE"/>
+      <rect x="75" y="40" width="20" height="90" fill="#C9B79C"/>
+      <rect x="75" y="40" width="20" height="8" fill="#A9926F"/>
+      <rect x="99" y="62" width="30" height="68" fill="#D9CBB3"/>
+      <rect x="133" y="35" width="18" height="95" fill="#8C7A66"/>
+      <rect x="133" y="35" width="18" height="8" fill="#6E5D45"/>
+      <rect x="155" y="50" width="24" height="80" fill="#EADFC9"/>
+      <path d="M172 50 h7 v34 l-3.5 -5 -3.5 5 z" fill="#B9A386"/>
+      <rect x="183" y="65" width="20" height="65" fill="#A9926F"/>
+      <rect x="207" y="45" width="16" height="85" fill="#E3D5BE"/>
+      <rect x="227" y="58" width="26" height="72" fill="#9C8567"/>
+      <rect x="227" y="58" width="26" height="7" fill="#7C6A52"/>
+      <rect x="257" y="38" width="22" height="92" fill="#F1E9D8"/>
+      <rect x="283" y="66" width="28" height="64" fill="#C9B79C"/>
+      <rect x="315" y="48" width="18" height="82" fill="#8C7A66"/>
+      <rect x="337" y="60" width="24" height="70" fill="#D9CBB3"/>
+      <rect x="365" y="42" width="20" height="88" fill="#B5A688"/>
+      <rect x="365" y="42" width="20" height="8" fill="#8C7A66"/>
+      <rect x="389" y="64" width="26" height="66" fill="#EADFC9"/>
+      <rect x="419" y="52" width="18" height="78" fill="#C9B79C"/>
+      <rect x="441" y="70" width="30" height="60" fill="#A9926F"/>
+      <g transform="rotate(4 495 115)">
+        <rect x="475" y="102" width="42" height="14" fill="#D9CBB3"/>
+        <rect x="475" y="116" width="42" height="12" fill="#B9A386"/>
+      </g>
+    </g>
+  </svg>
+  <h1>우리 반 책장</h1>
+  <p class="sub">고1, 책 읽는 걸 좋아하는 친구가 골라 소개하는 책들</p>
+</div>
+
+<div class="admin-bar hidden" id="adminBar">
+  <div class="admin-bar-inner">
+    <span>🔓 관리자 모드입니다</span>
+    <div class="admin-bar-actions">
+      <button id="membersBtn">멤버</button>
+      <button id="exportBtn">백업 다운로드</button>
+      <button id="importBtn">백업 불러오기</button>
+      <button id="logoutBtn">로그아웃</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="importFile" accept="application/json" class="hidden">
+
+<div class="filter-wrap">
+  <div class="filter-bar">
+    <div class="filter-tabs" id="filterTabs"></div>
+    <button id="favToggle">🔖 즐겨찾기만</button>
+  </div>
+</div>
+
+<main>
+  <div id="list"></div>
+  <div class="empty hidden" id="emptyState">
+    <div class="big">📖</div>
+    <p id="emptyText">아직 등록된 책이 없어요.<br>관리자 모드에서 첫 번째 책을 소개해보세요!</p>
+  </div>
+</main>
+
+<button class="fab hidden" id="addBtn">＋ 책 추가</button>
+<button class="fab fab-post hidden" id="postFab">✏️ 책 소개 쓰기</button>
+
+<section class="board" id="boardSection">
+  <div class="board-head">
+    <h2>📝 책 소개 게시판</h2>
+    <p class="sub">친구들이 자유롭게 올리는 책 소개예요.</p>
+  </div>
+  <div id="postList"></div>
+  <div class="post-empty hidden" id="postEmpty">아직 올라온 글이 없어요.<br>오른쪽 아래 연필 버튼으로 첫 글을 남겨보세요!</div>
+</section>
+
+<footer>독서왕 · 우리 반 책장</footer>
+
+<div class="overlay hidden" id="membersOverlay">
+  <div class="modal">
+    <button class="modal-close" data-close="membersOverlay">×</button>
+    <h2>멤버</h2>
+    <div id="membersList"></div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="memberDetailOverlay">
+  <div class="modal">
+    <button class="modal-close" data-close="memberDetailOverlay">×</button>
+    <h2 id="memberDetailTitle">이름</h2>
+    <p class="helper" id="memberDetailSub" style="margin-top:-10px;"></p>
+
+    <div class="detail-tabs">
+      <button type="button" class="detail-tab-btn active" id="detailTabPostsBtn">게시글</button>
+      <button type="button" class="detail-tab-btn" id="detailTabManageBtn">관리</button>
+    </div>
+
+    <div class="detail-panel" id="detailPanelPosts">
+      <p class="member-empty">아직 작성한 게시글이 없어요.<br>(게시글 기능은 준비 중이에요)</p>
+    </div>
+
+    <div class="detail-panel hidden" id="detailPanelManage">
+      <div class="field">
+        <label>가입 상태</label>
+        <p class="helper" id="manageStatusLine" style="margin-top:4px;"></p>
+        <button type="button" class="btn" id="manageApproveToggleBtn"></button>
+      </div>
+      <div class="field" style="margin-top:22px;padding-top:18px;border-top:1px dashed var(--line);">
+        <label style="color:var(--danger);">위험 구역</label>
+        <p class="helper" style="margin:4px 0 10px;">삭제하면 되돌릴 수 없어요.</p>
+        <button type="button" class="btn btn-danger" id="manageDeleteBtn">이 회원 삭제</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="bookOverlay">
+  <div class="modal">
+    <button class="modal-close" data-close="bookOverlay">×</button>
+
+    <h2 id="bookFormTitle">책 추가하기</h2>
+    <form id="bookForm">
+      <input type="hidden" id="bookId">
+      <div class="field">
+        <label for="bCategory">카테고리</label>
+        <select id="bCategory" required>
+          <option value="">선택해주세요</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="bCover">책 표지 사진 (선택)</label>
+        <input type="file" id="bCover" accept="image/*">
+        <img id="coverPreview" class="cover-preview hidden">
+      </div>
+      <div class="field"><label for="bTitle">책 제목</label><input type="text" id="bTitle" required></div>
+      <div class="field"><label for="bAuthor">지은이</label><input type="text" id="bAuthor" required></div>
+      <div class="field"><label for="bSummary">한 줄 요약</label><input type="text" id="bSummary" maxlength="70" required></div>
+      <div class="field"><label for="bReason">소개하고 싶은 이유</label><textarea id="bReason" required></textarea></div>
+      <div class="form-actions">
+        <button type="button" class="btn" data-close="bookOverlay">취소</button>
+        <button type="submit" class="btn btn-primary" id="bookSubmitBtn">저장</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="overlay hidden" id="detailOverlay">
+  <div class="modal detail-modal" id="detailContent"></div>
+</div>
+
+<div class="overlay hidden" id="postOverlay">
+  <div class="modal">
+    <button class="modal-close" data-close="postOverlay">×</button>
+    <h2>책 소개 쓰기</h2>
+    <form id="postForm">
+      <div class="field"><label for="pTitle">책 제목</label><input type="text" id="pTitle" required></div>
+      <div class="field"><label for="pAuthor">지은이</label><input type="text" id="pAuthor" required></div>
+      <div class="field">
+        <label for="pCategory">카테고리</label>
+        <select id="pCategory" required>
+          <option value="">선택해주세요</option>
+        </select>
+      </div>
+      <div class="field"><label for="pDesc">책 소개</label><textarea id="pDesc" required placeholder="어떤 책인지, 왜 소개하고 싶은지 자유롭게 적어주세요."></textarea></div>
+      <div class="form-actions">
+        <button type="button" class="btn" data-close="postOverlay">취소</button>
+        <button type="submit" class="btn btn-primary" id="postSubmitBtn">게시하기</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="overlay hidden" id="postDetailOverlay">
+  <div class="modal detail-modal" id="postDetailContent"></div>
+</div>
+
+<script src="common.js"></script>
+<script>
+const PALETTE = ['#8C7A66','#A9926F','#C9B79C','#7C6A52','#B9A386','#9C8567','#D9CBB3','#6E5D45','#B5A688'];
+
+const SEED_BOOKS = [
+  {id:'seed1', category:'800 문학', cover:'', title:'아몬드', author:'손원평',
+   summary:'감정을 잘 느끼지 못하는 소년이 세상과 부딪히며 성장하는 이야기',
+   reason:'친구 관계와 공감에 대해 다시 생각하게 해준 책이에요. 특히 후반부 전개가 마음을 오래 울렸어요.'},
+  {id:'seed2', category:'800 문학', cover:'', title:'죽고 싶지만 떡볶이는 먹고 싶어', author:'백세희',
+   summary:'우울과 함께 살아가는 하루하루를 담담하게 기록한 에세이',
+   reason:'무겁게 느껴질 수 있는 이야기를 편안하게 풀어내서 부담 없이 읽을 수 있었어요.'},
+  {id:'seed3', category:'400 자연과학', cover:'', title:'코스모스', author:'칼 세이건',
+   summary:'우주와 인간의 자리에 대한 깊은 성찰을 담은 교양 과학서',
+   reason:'밤하늘을 볼 때마다 이 책이 생각나요. 과학이 이렇게 아름다울 수 있다는 걸 처음 느꼈어요.'}
+];
+
+const authState = requireLogin();
+let books = loadBooks();
+let favorites = loadFavorites();
+let isAdmin = authState ? authState.isAdmin : false;
+let activeCategory = '전체';
+let showFavOnly = false;
+let posts = loadPosts();
+const myMember = authState ? authState.member : null;
+const myActorKey = actorKeyFromAuth(authState);
+
+function initial(str){ return (str || '').trim().slice(0,1) || '?'; }
+
+// 닉네임을 보여주되, 관리자 모드일 때는 옆에 회색으로 본명을 같이 보여줘요.
+function actorDisplayHtml(key){
+  const nickname = escapeHtml(resolveActorName(key));
+  if(isAdmin && key && key !== 'admin'){
+    const m = resolveActorMember(key);
+    if(m) return `${nickname}<span class="realname-tag">(${escapeHtml(m.name)})</span>`;
+  }
+  return nickname;
+}
+
+function renderAuthArea(){
+  const area = document.getElementById('authArea');
+  if(isAdmin){
+    area.innerHTML = `
+      <div class="profile-chip">
+        <div class="profile-avatar">관</div>
+        <div class="profile-text"><b>관리자</b></div>
+      </div>`;
+    return;
+  }
+  if(myMember){
+    const roleLabel = myMember.role === 'teacher' ? '선생님' : '학생';
+    area.innerHTML = `
+      <div class="profile-chip">
+        <div class="profile-avatar">${myMember.photo ? `<img src="${myMember.photo}" alt="">` : initial(myMember.nickname || myMember.name)}</div>
+        <div class="profile-text"><a href="mypage.html" style="text-decoration:none;color:inherit;"><b>${escapeHtml(myMember.nickname || myMember.name)}</b></a> · ${roleLabel}<br><button class="profile-logout" id="memberLogoutBtn">로그아웃</button></div>
+      </div>`;
+    document.getElementById('memberLogoutBtn').addEventListener('click', ()=>{
+      clearCurrentMember();
+      location.href = 'index.html';
+    });
+  }
+}
+
+// 화면 아래쪽 코드에서 혹시 오류가 나더라도 프로필/관리자바/글쓰기 버튼은 먼저 확실히 뜨도록
+// 스크립트 맨 위에서 바로 한 번 실행해요 (render()에서도 다시 실행되니 중복 호출은 안전해요).
+renderAuthArea();
+document.getElementById('adminBar').classList.toggle('hidden', !isAdmin);
+document.getElementById('addBtn').classList.toggle('hidden', !isAdmin);
+document.getElementById('postFab').classList.toggle('hidden', !(isAdmin || myMember));
+
+// 로그아웃 후 브라우저 "뒤로가기"로 이 페이지가 캐시에서 그대로 복원되면
+// 로그인 체크가 다시 실행되지 않아 "안 튕기는" 것처럼 보일 수 있어요. 그런 경우 새로고침해서 다시 검사해요.
+window.addEventListener('pageshow', (e)=>{
+  if(e.persisted) location.reload();
+});
+
+function loadBooks(){
+  try{ const raw = localStorage.getItem(LS_BOOKS); if(raw) return JSON.parse(raw); }catch(e){}
+  return SEED_BOOKS.slice();
+}
+function saveBooks(){ try{ localStorage.setItem(LS_BOOKS, JSON.stringify(books)); }catch(e){} }
+function loadFavorites(){
+  try{ const raw = localStorage.getItem(LS_FAV); if(raw) return JSON.parse(raw); }catch(e){}
+  return [];
+}
+function saveFavorites(){ try{ localStorage.setItem(LS_FAV, JSON.stringify(favorites)); }catch(e){} }
+function colorForCategory(cat){
+  let h=0; for(let i=0;i<cat.length;i++){ h = cat.charCodeAt(i) + ((h<<5)-h); }
+  return PALETTE[Math.abs(h) % PALETTE.length];
+}
+function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+function getCategories(){ return ['전체', ...Array.from(new Set(books.map(b=>b.category)))]; }
+
+function renderFilters(){
+  const bar = document.getElementById('filterTabs');
+  bar.innerHTML = '';
+  getCategories().forEach(cat=>{
+    const btn = document.createElement('button');
+    btn.className = 'filter-tab' + (cat === activeCategory ? ' active' : '');
+    btn.textContent = cat;
+    btn.addEventListener('click', ()=>{ activeCategory = cat; render(); });
+    bar.appendChild(btn);
+  });
+}
+
+function coverEl(book){
+  if(book.cover){
+    const img = document.createElement('img');
+    img.className = 'cover'; img.src = book.cover; img.alt = book.title + ' 표지';
+    return img;
+  }
+  const div = document.createElement('div');
+  div.className = 'cover-placeholder';
+  div.style.background = colorForCategory(book.category);
+  div.textContent = book.title;
+  return div;
+}
+
+function renderList(){
+  const list = document.getElementById('list');
+  const empty = document.getElementById('emptyState');
+  const emptyText = document.getElementById('emptyText');
+  list.innerHTML = '';
+
+  let filtered = books.filter(b => activeCategory === '전체' || b.category === activeCategory);
+  if(showFavOnly) filtered = filtered.filter(b => favorites.includes(b.id));
+
+  if(books.length === 0){
+    emptyText.innerHTML = '아직 등록된 책이 없어요.<br>관리자 모드에서 첫 번째 책을 소개해보세요!';
+    empty.classList.remove('hidden'); list.classList.add('hidden');
+    return;
+  }
+  if(filtered.length === 0){
+    emptyText.innerHTML = showFavOnly ? '즐겨찾기한 책이 아직 없어요.<br>책 옆 책갈피를 눌러 담아보세요.' : '이 카테고리에는 아직 책이 없어요.';
+    empty.classList.remove('hidden'); list.classList.add('hidden');
+    return;
+  }
+  empty.classList.add('hidden'); list.classList.remove('hidden');
+
+  filtered.forEach((book, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'row';
+
+    const num = document.createElement('div');
+    num.className = 'num';
+    num.textContent = String(idx+1).padStart(2,'0');
+    row.appendChild(num);
+
+    const coverWrap = document.createElement('div');
+    coverWrap.className = 'cover-wrap';
+    coverWrap.appendChild(coverEl(book));
+    const ribbon = document.createElement('button');
+    ribbon.className = 'ribbon' + (favorites.includes(book.id) ? ' active' : '');
+    ribbon.title = favorites.includes(book.id) ? '즐겨찾기 해제' : '즐겨찾기에 담기';
+    ribbon.addEventListener('click', (e)=>{ e.stopPropagation(); toggleFavorite(book.id); });
+    coverWrap.appendChild(ribbon);
+    row.appendChild(coverWrap);
+
+    const body = document.createElement('div');
+    body.className = 'row-body';
+    const color = colorForCategory(book.category);
+    const top = document.createElement('div');
+    top.className = 'row-top';
+    const left = document.createElement('div');
+    left.innerHTML = `
+      <p class="cat" style="color:${color}">${escapeHtml(book.category)}</p>
+      <h3>${escapeHtml(book.title)}</h3>
+      <p class="author">${escapeHtml(book.author)}</p>
+    `;
+    left.querySelector('h3').addEventListener('click', ()=> openDetail(book.id));
+    top.appendChild(left);
+
+    if(isAdmin){
+      const actions = document.createElement('div');
+      actions.className = 'admin-actions';
+      const editBtn = document.createElement('button');
+      editBtn.className = 'icon-btn'; editBtn.title = '수정'; editBtn.textContent = '✎';
+      editBtn.addEventListener('click', ()=> openBookForm(book.id));
+      const delBtn = document.createElement('button');
+      delBtn.className = 'icon-btn'; delBtn.title = '삭제'; delBtn.textContent = '🗑';
+      delBtn.addEventListener('click', ()=> deleteBook(book.id));
+      actions.appendChild(editBtn); actions.appendChild(delBtn);
+      top.appendChild(actions);
+    }
+    body.appendChild(top);
+
+    const sum = document.createElement('p');
+    sum.className = 'sum';
+    sum.textContent = book.summary;
+    sum.addEventListener('click', ()=> openDetail(book.id));
+    body.appendChild(sum);
+
+    row.appendChild(body);
+    list.appendChild(row);
+  });
+}
+
+function toggleFavorite(id){
+  if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id);
+  else favorites.push(id);
+  saveFavorites();
+  render();
+}
+
+function render(){
+  renderFilters();
+  renderList();
+  renderAuthArea();
+  renderBoard();
+  document.getElementById('adminBar').classList.toggle('hidden', !isAdmin);
+  document.getElementById('addBtn').classList.toggle('hidden', !isAdmin);
+  document.getElementById('postFab').classList.toggle('hidden', !(isAdmin || myMember));
+  document.getElementById('favToggle').classList.toggle('active', showFavOnly);
+}
+
+document.getElementById('favToggle').addEventListener('click', ()=>{
+  showFavOnly = !showFavOnly;
+  render();
+});
+
+function openDetail(id){
+  const book = books.find(b=>b.id === id);
+  if(!book) return;
+  const content = document.getElementById('detailContent');
+  const color = colorForCategory(book.category);
+  content.innerHTML = `
+    <button class="modal-close" data-close="detailOverlay">×</button>
+    ${book.cover ? `<img src="${book.cover}" class="detail-cover" alt="${escapeHtml(book.title)} 표지">` : ''}
+    <p class="detail-cat" style="color:${color}">${escapeHtml(book.category)}</p>
+    <h2>${escapeHtml(book.title)}</h2>
+    <p class="detail-author">${escapeHtml(book.author)} 지음</p>
+    <div class="detail-section"><h4>한 줄 요약</h4><p>${escapeHtml(book.summary)}</p></div>
+    <div class="detail-section"><h4>소개하고 싶은 이유</h4><p>${escapeHtml(book.reason)}</p></div>
+  `;
+  document.querySelector('#detailOverlay .modal-close').addEventListener('click', ()=>hideOverlay('detailOverlay'));
+  showOverlay('detailOverlay');
+}
+
+function showOverlay(id){ document.getElementById(id).classList.remove('hidden'); }
+function hideOverlay(id){ document.getElementById(id).classList.add('hidden'); }
+document.querySelectorAll('[data-close]').forEach(btn=>{ btn.addEventListener('click', ()=> hideOverlay(btn.dataset.close)); });
+document.querySelectorAll('.overlay').forEach(ov=>{ ov.addEventListener('click', (e)=>{ if(e.target === ov) hideOverlay(ov.id); }); });
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape'){ document.querySelectorAll('.overlay').forEach(ov=>{ if(!ov.classList.contains('hidden')) hideOverlay(ov.id); }); }
+});
+
+function logoutAdmin(){
+  localStorage.removeItem(LS_LOGGED_IN);
+  location.href = 'index.html';
+}
+document.getElementById('logoutBtn').addEventListener('click', logoutAdmin);
+
+/* ---------- 멤버 ---------- */
+document.getElementById('membersBtn').addEventListener('click', ()=>{
+  renderMembersList();
+  showOverlay('membersOverlay');
+});
+
+function renderMembersList(){
+  const wrap = document.getElementById('membersList');
+  const members = loadMembers();
+  wrap.innerHTML = '';
+
+  if(members.length === 0){
+    wrap.innerHTML = '<p class="member-empty">아직 등록된 멤버가 없어요.</p>';
+    return;
+  }
+
+  // 승인 대기 중인 사람이 위로 오도록 정렬
+  const sorted = members.slice().sort((a,b)=> (a.approved === b.approved) ? 0 : (a.approved ? 1 : -1));
+
+  sorted.forEach(m=>{
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'member-row';
+    row.style.width = '100%';
+    row.style.background = 'none';
+    row.style.border = 'none';
+    row.style.textAlign = 'left';
+    row.style.cursor = 'pointer';
+
+    const info = document.createElement('div');
+    info.className = 'member-info';
+    const roleLabel = m.role === 'teacher' ? '선생님' : '학생';
+    const idPart = m.role === 'student' ? escapeHtml(m.id) + ' · ' : '';
+    info.innerHTML = `<span class="role">${roleLabel}</span>${idPart}<b>${escapeHtml(m.name)}</b>` +
+      `<span class="status ${m.approved ? 'approved' : 'pending'}">${m.approved ? '승인됨' : '승인 대기'}</span>`;
+
+    row.appendChild(info);
+    row.addEventListener('click', ()=> openMemberDetail(m));
+    wrap.appendChild(row);
+  });
+}
+
+let currentDetailMember = null;
+
+function openMemberDetail(target){
+  currentDetailMember = target;
+  const roleLabel = target.role === 'teacher' ? '선생님' : '학생';
+  const idPart = target.role === 'student' ? (target.id + ' · ') : '';
+  document.getElementById('memberDetailTitle').textContent = target.name;
+  document.getElementById('memberDetailSub').textContent = `${roleLabel} · ${idPart}${target.name}${target.nickname && target.nickname !== target.name ? ` (게시판 아이디: ${target.nickname})` : ''}`;
+  setDetailTab('posts');
+  renderMemberPostsTab(target);
+  renderManageTab();
+  showOverlay('memberDetailOverlay');
+}
+
+function renderMemberPostsTab(target){
+  const wrap = document.getElementById('detailPanelPosts');
+  const key = actorKeyFromMember(target);
+  const theirPosts = loadPosts().filter(p => p.authorKey === key);
+  if(theirPosts.length === 0){
+    wrap.innerHTML = '<p class="member-empty">아직 작성한 게시글이 없어요.</p>';
+    return;
+  }
+  wrap.innerHTML = theirPosts.map(p => `
+    <div class="member-row" style="cursor:pointer;flex-direction:column;align-items:flex-start;" data-post-jump="${p.id}">
+      <div class="member-info"><span class="role">${escapeHtml(p.categoryCode)} ${escapeHtml(p.categoryLabel)}</span><b>${escapeHtml(p.title)}</b></div>
+      <p class="helper" style="margin:2px 0 0;">좋아요 ${p.likes.length} · 댓글 ${p.comments.length} · ${timeAgo(p.createdAt)}</p>
+    </div>
+  `).join('');
+  wrap.querySelectorAll('[data-post-jump]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      hideOverlay('memberDetailOverlay');
+      hideOverlay('membersOverlay');
+      openPostDetail(el.dataset.postJump);
+    });
+  });
+}
+
+function setDetailTab(tab){
+  const postsBtn = document.getElementById('detailTabPostsBtn');
+  const manageBtn = document.getElementById('detailTabManageBtn');
+  postsBtn.classList.toggle('active', tab === 'posts');
+  manageBtn.classList.toggle('active', tab === 'manage');
+  document.getElementById('detailPanelPosts').classList.toggle('hidden', tab !== 'posts');
+  document.getElementById('detailPanelManage').classList.toggle('hidden', tab !== 'manage');
+}
+document.getElementById('detailTabPostsBtn').addEventListener('click', ()=> setDetailTab('posts'));
+document.getElementById('detailTabManageBtn').addEventListener('click', ()=> setDetailTab('manage'));
+
+function renderManageTab(){
+  const m = currentDetailMember;
+  if(!m) return;
+  document.getElementById('manageStatusLine').textContent = m.approved ? '현재 승인된 상태예요.' : '아직 승인 대기 중이에요.';
+  const toggleBtn = document.getElementById('manageApproveToggleBtn');
+  toggleBtn.textContent = m.approved ? '승인 취소하기' : '승인하기';
+  toggleBtn.onclick = ()=> setMemberApproval(m, !m.approved);
+}
+
+function findMemberIndex(target, members){
+  return members.findIndex(m => m.role === target.role && m.name === target.name && (target.role === 'teacher' || m.id === target.id));
+}
+
+function setMemberApproval(target, approved){
+  const members = loadMembers();
+  const idx = findMemberIndex(target, members);
+  if(idx === -1) return;
+  members[idx].approved = approved;
+  saveMembers(members);
+  currentDetailMember = members[idx];
+  renderManageTab();
+  renderMembersList();
+}
+
+document.getElementById('manageDeleteBtn').addEventListener('click', ()=>{
+  const target = currentDetailMember;
+  if(!target) return;
+  if(!confirm(`"${target.name}" 님을 삭제할까요? 되돌릴 수 없어요.`)) return;
+  let members = loadMembers();
+  members = members.filter(m => !(m.role === target.role && m.name === target.name && (target.role === 'teacher' || m.id === target.id)));
+  saveMembers(members);
+  hideOverlay('memberDetailOverlay');
+  renderMembersList();
+});
+
+
+document.getElementById('addBtn').addEventListener('click', ()=> openBookForm(null));
+
+function openBookForm(id){
+  const form = document.getElementById('bookForm');
+  form.reset();
+  document.getElementById('coverPreview').classList.add('hidden');
+  document.getElementById('coverPreview').src = '';
+  if(id){
+    const book = books.find(b=>b.id === id);
+    document.getElementById('bookFormTitle').textContent = '책 정보 수정';
+    document.getElementById('bookId').value = book.id;
+    document.getElementById('bCategory').value = book.category;
+    document.getElementById('bTitle').value = book.title;
+    document.getElementById('bAuthor').value = book.author;
+    document.getElementById('bSummary').value = book.summary;
+    document.getElementById('bReason').value = book.reason;
+    if(book.cover){
+      const p = document.getElementById('coverPreview');
+      p.src = book.cover; p.classList.remove('hidden');
+    }
+  }else{
+    document.getElementById('bookFormTitle').textContent = '책 추가하기';
+    document.getElementById('bookId').value = '';
+  }
+  updateBookReady();
+  showOverlay('bookOverlay');
+}
+
+const updateBookReady = wireReadyButton(
+  document.getElementById('bookSubmitBtn'),
+  ()=> document.getElementById('bookForm').checkValidity(),
+  ['bCategory','bTitle','bAuthor','bSummary','bReason'].map(id=>document.getElementById(id))
+);
+
+document.getElementById('bCover').addEventListener('change', (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{ const p = document.getElementById('coverPreview'); p.src = reader.result; p.classList.remove('hidden'); };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('bookForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const id = document.getElementById('bookId').value;
+  const coverPreview = document.getElementById('coverPreview');
+  const data = {
+    category: document.getElementById('bCategory').value.trim(),
+    cover: coverPreview.classList.contains('hidden') ? '' : coverPreview.src,
+    title: document.getElementById('bTitle').value.trim(),
+    author: document.getElementById('bAuthor').value.trim(),
+    summary: document.getElementById('bSummary').value.trim(),
+    reason: document.getElementById('bReason').value.trim(),
+  };
+  if(id){
+    const idx = books.findIndex(b=>b.id === id);
+    books[idx] = { ...books[idx], ...data };
+  }else{
+    books.unshift({ id: 'b' + Date.now(), ...data });
+  }
+  saveBooks();
+  hideOverlay('bookOverlay');
+  render();
+});
+
+function deleteBook(id){
+  const book = books.find(b=>b.id === id);
+  if(!book) return;
+  if(!confirm(`"${book.title}" 책을 삭제할까요?`)) return;
+  books = books.filter(b=>b.id !== id);
+  favorites = favorites.filter(f=>f!==id);
+  saveBooks(); saveFavorites();
+  render();
+}
+
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(books, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'reading-king-books.json'; a.click();
+  URL.revokeObjectURL(url);
+});
+document.getElementById('importBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change', (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const data = JSON.parse(reader.result);
+      if(!Array.isArray(data)) throw new Error('형식 오류');
+      if(!confirm('불러온 파일로 현재 책 목록을 덮어쓸까요?')) return;
+      books = data; saveBooks(); render();
+    }catch(err){ alert('파일을 읽을 수 없어요. 이 앱에서 내보낸 JSON 파일인지 확인해주세요.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+/* ---------- 책 소개 게시판 ---------- */
+const pCategorySelect = document.getElementById('pCategory');
+const bCategorySelect = document.getElementById('bCategory');
+DEWEY_CATEGORIES.forEach(c=>{
+  const opt1 = document.createElement('option');
+  opt1.value = c.code; opt1.textContent = `${c.code} ${c.label}`;
+  pCategorySelect.appendChild(opt1);
+
+  const opt2 = document.createElement('option');
+  opt2.value = `${c.code} ${c.label}`; opt2.textContent = `${c.code} ${c.label}`;
+  bCategorySelect.appendChild(opt2);
+});
+
+function timeAgo(ts){
+  const diff = Math.max(0, Date.now() - ts);
+  const min = Math.floor(diff/60000);
+  if(min < 1) return '방금 전';
+  if(min < 60) return `${min}분 전`;
+  const hr = Math.floor(min/60);
+  if(hr < 24) return `${hr}시간 전`;
+  const day = Math.floor(hr/24);
+  if(day < 7) return `${day}일 전`;
+  return new Date(ts).toLocaleDateString('ko-KR');
+}
+
+function renderBoard(){
+  posts = loadPosts();
+  const list = document.getElementById('postList');
+  const empty = document.getElementById('postEmpty');
+  list.innerHTML = '';
+  if(posts.length === 0){
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  posts.forEach(post=>{
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    const liked = myActorKey && post.likes.includes(myActorKey);
+    const commentCount = post.comments.length;
+    card.innerHTML = `
+      <div class="post-top">
+        <div>
+          <span class="post-cat-badge">${escapeHtml(post.categoryCode)} ${escapeHtml(post.categoryLabel)}</span>
+          <h3>${escapeHtml(post.title)}</h3>
+          <p class="author">${escapeHtml(post.author)} 지음</p>
+        </div>
+      </div>
+      <p class="desc">${escapeHtml(post.description)}</p>
+      <div class="post-meta">
+        <span class="post-writer">✍️ ${actorDisplayHtml(post.authorKey)} · ${timeAgo(post.createdAt)}</span>
+        <div class="post-stats">
+          <button class="heart-btn ${liked ? 'active' : ''}" data-like="${post.id}">${liked ? '♥' : '♡'} ${post.likes.length}</button>
+          <button class="comment-count-btn" data-open="${post.id}">💬 ${commentCount}</button>
+        </div>
+      </div>
+    `;
+    card.querySelector('h3').addEventListener('click', ()=> openPostDetail(post.id));
+    card.querySelector('.desc').addEventListener('click', ()=> openPostDetail(post.id));
+    card.querySelector('[data-open]').addEventListener('click', ()=> openPostDetail(post.id));
+    card.querySelector('[data-like]').addEventListener('click', ()=> handleToggleLike(post.id));
+    list.appendChild(card);
+  });
+}
+
+function handleToggleLike(postId){
+  if(!myActorKey){ alert('좋아요는 로그인 후 이용할 수 있어요.'); return; }
+  toggleLike(postId, myActorKey);
+  renderBoard();
+  if(!document.getElementById('postDetailOverlay').classList.contains('hidden')){
+    openPostDetail(postId, true);
+  }
+}
+
+function renderCommentNode(post, comment, depth){
+  const children = post.comments.filter(c => c.parentId === comment.id);
+  return `
+    <div class="comment" style="margin-left:${Math.min(depth,4)*18}px">
+      <p class="comment-author">${actorDisplayHtml(comment.authorKey)}</p>
+      <p class="comment-text">${escapeHtml(comment.text)}</p>
+      <button class="comment-reply-btn" data-reply-toggle="${comment.id}">답글 달기</button>
+      <div class="reply-box hidden" id="replyBox-${comment.id}">
+        <textarea id="replyInput-${comment.id}" placeholder="답글을 입력하세요"></textarea>
+        <button data-reply-submit="${comment.id}" data-post="${post.id}">등록</button>
+      </div>
+      ${children.map(ch=>renderCommentNode(post, ch, depth+1)).join('')}
+    </div>
+  `;
+}
+
+function openPostDetail(id, skipShow){
+  posts = loadPosts();
+  const post = posts.find(p=>p.id === id);
+  if(!post) return;
+  const content = document.getElementById('postDetailContent');
+  const liked = myActorKey && post.likes.includes(myActorKey);
+  const roots = post.comments.filter(c => !c.parentId);
+  const canDelete = isAdmin || (myActorKey && myActorKey === post.authorKey);
+
+  content.innerHTML = `
+    <button class="modal-close" data-close="postDetailOverlay">×</button>
+    <span class="post-detail-cat">${escapeHtml(post.categoryCode)} ${escapeHtml(post.categoryLabel)}</span>
+    <h2>${escapeHtml(post.title)}</h2>
+    <p class="post-detail-author">${escapeHtml(post.author)} 지음 · ✍️ ${actorDisplayHtml(post.authorKey)} · ${timeAgo(post.createdAt)}</p>
+    <p class="post-detail-desc">${escapeHtml(post.description)}</p>
+    <div class="post-detail-actions">
+      <button class="heart-btn ${liked ? 'active' : ''}" id="postDetailLikeBtn">${liked ? '♥' : '♡'} 좋아요 ${post.likes.length}</button>
+      ${canDelete ? `<button class="post-delete-btn" id="postDeleteBtn">이 글 삭제</button>` : ''}
+    </div>
+    ${isAdmin ? `<p class="helper" style="margin:-10px 0 16px;">❤️ 좋아요 누른 사람: ${post.likes.length ? post.likes.map(k=>actorDisplayHtml(k)).join(', ') : '아직 없음'}</p>` : ''}
+    <p class="comments-title">댓글 ${post.comments.length}개</p>
+    <div id="commentList">
+      ${roots.length ? roots.map(c=>renderCommentNode(post, c, 0)).join('') : '<p class="comment-empty">아직 댓글이 없어요. 첫 댓글을 남겨보세요!</p>'}
+    </div>
+    ${myActorKey ? `
+      <div class="comment-form">
+        <textarea id="newCommentInput" placeholder="댓글을 입력하세요"></textarea>
+        <button id="newCommentBtn">등록</button>
+      </div>
+    ` : `<p class="helper">댓글은 로그인 후 남길 수 있어요.</p>`}
+  `;
+
+  document.querySelector('#postDetailContent .modal-close').addEventListener('click', ()=>hideOverlay('postDetailOverlay'));
+  document.getElementById('postDetailLikeBtn').addEventListener('click', ()=> handleToggleLike(post.id));
+  const delBtn = document.getElementById('postDeleteBtn');
+  if(delBtn) delBtn.addEventListener('click', ()=>{
+    if(!confirm('이 글을 삭제할까요? 되돌릴 수 없어요.')) return;
+    deletePostById(post.id);
+    hideOverlay('postDetailOverlay');
+    renderBoard();
+  });
+
+  content.querySelectorAll('[data-reply-toggle]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.getElementById('replyBox-' + btn.dataset.replyToggle).classList.toggle('hidden');
+    });
+  });
+  content.querySelectorAll('[data-reply-submit]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(!myActorKey){ alert('답글은 로그인 후 남길 수 있어요.'); return; }
+      const commentId = btn.dataset.replySubmit;
+      const text = document.getElementById('replyInput-' + commentId).value.trim();
+      if(!text) return;
+      addComment(post.id, text, myActorKey, commentId);
+      openPostDetail(post.id, true);
+      renderBoard();
+    });
+  });
+
+  const newCommentBtn = document.getElementById('newCommentBtn');
+  if(newCommentBtn){
+    newCommentBtn.addEventListener('click', ()=>{
+      const input = document.getElementById('newCommentInput');
+      const text = input.value.trim();
+      if(!text) return;
+      addComment(post.id, text, myActorKey, null);
+      openPostDetail(post.id, true);
+      renderBoard();
+    });
+  }
+
+  if(!skipShow) showOverlay('postDetailOverlay');
+}
+
+document.getElementById('postFab').addEventListener('click', ()=>{
+  document.getElementById('postForm').reset();
+  updatePostReady();
+  showOverlay('postOverlay');
+});
+
+const updatePostReady = wireReadyButton(
+  document.getElementById('postSubmitBtn'),
+  ()=> document.getElementById('postForm').checkValidity(),
+  ['pTitle','pAuthor','pCategory','pDesc'].map(id=>document.getElementById(id))
+);
+
+document.getElementById('postForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  if(!myActorKey){ alert('로그인 후 이용할 수 있어요.'); return; }
+  const categoryCode = pCategorySelect.value;
+  const categoryLabel = (DEWEY_CATEGORIES.find(c=>c.code === categoryCode) || {}).label || '';
+  createPost({
+    title: document.getElementById('pTitle').value.trim(),
+    author: document.getElementById('pAuthor').value.trim(),
+    categoryCode, categoryLabel,
+    description: document.getElementById('pDesc').value.trim(),
+    authorKey: myActorKey
+  });
+  hideOverlay('postOverlay');
+  renderBoard();
+});
+
+// mypage.html 등에서 books.html?post=글아이디 형태로 들어오면 그 글을 바로 열어줘요.
+(function openPostFromQuery(){
+  const params = new URLSearchParams(location.search);
+  const postId = params.get('post');
+  if(postId){
+    setTimeout(()=>{
+      document.getElementById('boardSection').scrollIntoView({behavior:'smooth', block:'start'});
+      openPostDetail(postId);
+    }, 100);
+  }
+})();
+
+render();
+</script>
+</body>
+</html>
