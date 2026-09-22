@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>홈 | 우리 반</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF7EF;
+    --card:#FFFEFA;
+    --ink:#55493C;
+    --ink-soft:#A0937E;
+    --ink-faint:#CBBFA9;
+    --line:#EFE7D6;
+    --accent:#C9B79C;
+    --accent-dark:#A9926F;
+    --danger:#B0725E;
+    --success:#7A8B6F;
+    --serif:'Noto Serif KR', serif;
+    --sans:-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--sans);line-height:1.6;
+  }
+  a{color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  /* ---------- 헤더 ---------- */
+  .topbar{max-width:900px;margin:0 auto;padding:30px 24px 4px;position:relative;}
+  .topbar h1{font-family:var(--serif);font-weight:500;font-size:clamp(1.5rem,3vw + 1rem,2rem);margin:0 0 4px;}
+  .topbar .sub{font-size:0.88rem;color:var(--ink-faint);margin:0;}
+  #authArea{position:absolute;top:30px;right:24px;display:flex;align-items:center;gap:8px;}
+  .auth-link{
+    background:transparent;border:1px solid var(--line);color:var(--ink-soft);
+    padding:8px 15px;border-radius:999px;font-size:0.82rem;
+    display:flex;align-items:center;gap:6px;text-decoration:none;
+  }
+  .auth-link:hover{border-color:var(--accent);color:var(--accent-dark);}
+  .profile-chip{display:flex;align-items:center;gap:8px;}
+  .profile-avatar{
+    width:32px;height:32px;border-radius:50%;background:var(--card);color:var(--accent-dark);
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:0.85rem;
+    flex-shrink:0;border:1px solid var(--line);overflow:hidden;
+  }
+  .profile-avatar img{width:100%;height:100%;object-fit:cover;}
+  .profile-text{font-size:0.8rem;color:var(--ink-soft);line-height:1.3;}
+  .profile-text b{color:var(--ink);font-weight:600;}
+  .profile-logout{background:none;border:none;color:var(--ink-faint);font-size:0.74rem;text-decoration:underline;padding:0;}
+  .profile-logout:hover{color:var(--ink-soft);}
+
+  main{max-width:900px;margin:0 auto;padding:22px 24px 70px;}
+
+  /* ---------- 시간표 카드 ---------- */
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:4px;
+    padding:24px;margin-bottom:26px;
+  }
+  .card h2{font-family:var(--serif);font-weight:500;font-size:1.15rem;margin:0 0 14px;}
+  .timetable-placeholder{
+    text-align:center;padding:36px 20px;color:var(--ink-faint);font-size:0.9rem;
+    border:1px dashed var(--line);border-radius:4px;
+  }
+  .timetable-placeholder .big{font-size:1.8rem;margin-bottom:8px;}
+
+  /* ---------- 바로가기 ---------- */
+  .section-label{font-size:0.8rem;color:var(--ink-faint);margin:0 0 12px;letter-spacing:0.02em;}
+  .link-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;
+  }
+  .link-card{
+    display:block;background:var(--card);border:1px solid var(--line);border-radius:4px;
+    padding:20px;text-decoration:none;transition:border-color .15s ease;
+  }
+  .link-card:hover{border-color:var(--accent-dark);}
+  .link-card .icon{font-size:1.5rem;margin-bottom:10px;display:block;}
+  .link-card h3{font-family:var(--serif);font-weight:500;font-size:1.05rem;margin:0 0 4px;color:var(--ink);}
+  .link-card p{font-size:0.82rem;color:var(--ink-faint);margin:0;}
+
+  @media (max-width:520px){
+    #authArea{position:static;justify-content:center;margin:14px 0 0;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>우리 반</h1>
+  <p class="sub">시간표와 반 소식들을 한곳에서 볼 수 있어요</p>
+  <div id="authArea"></div>
+</div>
+
+<main>
+  <div class="card">
+    <h2>시간표</h2>
+    <div class="timetable-placeholder" id="timetableBox">
+      <div class="big">🗓️</div>
+      시간표가 곧 올라올 예정이에요.
+    </div>
+  </div>
+
+  <p class="section-label">더 보기</p>
+  <div class="link-grid">
+    <a class="link-card" href="books.html">
+      <span class="icon">📚</span>
+      <h3>우리 반 책장</h3>
+      <p>친구가 소개하는 책들 보러 가기</p>
+    </a>
+    <a class="link-card" href="board.html">
+      <span class="icon">📝</span>
+      <h3>게시판</h3>
+      <p>반 친구들과 자유롭게 이야기해요</p>
+    </a>
+  </div>
+</main>
+
+<script src="common.js"></script>
+<script>
+  renderAuthArea();
+
+  function renderAuthArea(){
+    const area = document.getElementById('authArea');
+    area.innerHTML = '';
+
+    const isAdmin = localStorage.getItem(LS_LOGGED_IN) === 'true';
+    if(isAdmin){
+      const a = document.createElement('a');
+      a.className = 'auth-link';
+      a.href = 'mypage.html';
+      a.textContent = '내 페이지';
+      area.appendChild(a);
+      return;
+    }
+
+    const member = getCurrentMemberFull();
+    if(member){
+      const chip = document.createElement('div');
+      chip.className = 'profile-chip';
+
+      const avatar = document.createElement('div');
+      avatar.className = 'profile-avatar';
+      if(member.photo){
+        const img = document.createElement('img');
+        img.src = member.photo;
+        img.alt = member.name;
+        avatar.appendChild(img);
+      }else{
+        avatar.textContent = member.name ? member.name.charAt(0) : '?';
+      }
+
+      const text = document.createElement('div');
+      text.className = 'profile-text';
+      const idPart = (member.role === 'student' && member.id) ? escapeHtml(member.id) + ' · ' : '';
+      text.innerHTML = idPart + '<b>' + escapeHtml(member.name) + '</b>';
+
+      const logoutBtn = document.createElement('button');
+      logoutBtn.className = 'profile-logout';
+      logoutBtn.textContent = '로그아웃';
+      logoutBtn.addEventListener('click', ()=>{ clearCurrentMember(); renderAuthArea(); });
+
+      chip.appendChild(avatar);
+      chip.appendChild(text);
+      chip.appendChild(logoutBtn);
+      area.appendChild(chip);
+      return;
+    }
+
+    const a = document.createElement('a');
+    a.className = 'auth-link';
+    a.href = 'login.html';
+    a.textContent = '로그인';
+    area.appendChild(a);
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+</script>
+</body>
+</html>
