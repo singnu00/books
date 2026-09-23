@@ -20,16 +20,23 @@
   img{max-width:100%;display:block;}
   button{font-family:inherit;cursor:pointer;}
   :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .dim{color:var(--ink-faint);}
 
-  .hero{max-width:640px;margin:0 auto;padding:30px 24px 4px;position:relative;}
+  .hero{max-width:720px;margin:0 auto;padding:28px 20px 0;}
   .home-link{font-size:0.82rem;color:var(--ink-faint);text-decoration:none;}
   .home-link:hover{color:var(--ink-soft);}
-  .hero h1{font-family:var(--serif);font-weight:500;font-size:1.6rem;margin:14px 0 0;}
+  .hero h1{font-family:var(--serif);font-weight:500;font-size:1.5rem;margin:12px 0 16px;}
 
-  main{max-width:640px;margin:0 auto;padding:10px 24px 100px;}
-  section.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:24px 22px;margin-top:20px;}
-  section.card h2{font-family:var(--serif);font-weight:500;font-size:1.1rem;margin:0 0 4px;}
-  section.card .sub{font-size:0.82rem;color:var(--ink-faint);margin:0 0 18px;}
+  .tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);max-width:720px;margin:0 auto;padding:0 20px;}
+  .tab-btn{flex-shrink:0;background:none;border:none;padding:10px 14px;font-size:0.88rem;color:var(--ink-faint);border-bottom:2px solid transparent;white-space:nowrap;}
+  .tab-btn.active{color:var(--ink);border-bottom-color:var(--accent-dark);font-weight:600;}
+
+  main{max-width:720px;margin:0 auto;padding:22px 20px 100px;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:22px 20px;margin-bottom:18px;}
+  section.card h2{font-family:var(--serif);font-weight:500;font-size:1.05rem;margin:0 0 4px;}
+  section.card .sub{font-size:0.82rem;color:var(--ink-faint);margin:0 0 16px;}
 
   .field{margin-bottom:14px;}
   .field label{display:block;font-size:0.8rem;color:var(--ink-soft);margin-bottom:6px;}
@@ -37,10 +44,9 @@
     width:100%;border:1px solid var(--line);background:#fff;padding:10px 11px;
     font-family:inherit;font-size:0.94rem;border-radius:2px;color:var(--ink);
   }
-  .field input[disabled]{background:var(--bg);color:var(--ink-soft);}
   .helper{font-size:0.78rem;color:var(--ink-soft);margin:4px 0 0;}
-  .error{font-size:0.8rem;color:var(--danger);margin:-4px 0 12px;display:none;}
-  .success{font-size:0.8rem;color:var(--success);margin:-4px 0 12px;display:none;}
+  .error{font-size:0.8rem;color:var(--danger);margin:6px 0 0;display:none;}
+  .success{font-size:0.8rem;color:var(--success);margin:6px 0 0;display:none;}
 
   .profile-row{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
   .avatar-big{
@@ -49,8 +55,7 @@
     border:1px solid var(--line);overflow:hidden;flex-shrink:0;
   }
   .avatar-big img{width:100%;height:100%;object-fit:cover;}
-  .avatar-actions{font-size:0.8rem;}
-  .avatar-actions label{color:var(--accent-dark);text-decoration:underline;cursor:pointer;}
+  .avatar-actions label{color:var(--accent-dark);text-decoration:underline;cursor:pointer;font-size:0.8rem;}
 
   .btn-primary{
     padding:10px 20px;border-radius:999px;border:1px solid var(--line);
@@ -58,23 +63,26 @@
   }
   .btn-primary.is-ready{background:var(--accent-dark);border-color:var(--accent-dark);color:#fff;cursor:pointer;}
   .btn-primary.is-ready:hover{background:var(--ink);border-color:var(--ink);}
+  .btn-ghost{background:none;border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:0.85rem;color:var(--ink-soft);}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent-dark);}
 
-  .pw-line{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:0.9rem;}
+  .pw-line{display:flex;align-items:center;justify-content:space-between;padding:7px 0;font-size:0.9rem;}
   .pw-line .dots{letter-spacing:3px;color:var(--ink-soft);}
-  .divider-dashed{border-top:1px dashed var(--line);margin:14px 0;}
+  .pw-actions{margin-top:10px;}
 
-  .liked-item, .comment-item{
-    display:block;width:100%;text-align:left;background:none;border:none;padding:12px 0;
-    border-top:1px solid var(--line);font-family:inherit;
-  }
-  .liked-item:first-child, .comment-item:first-child{border-top:none;}
-  .liked-item .cat{font-size:0.7rem;color:var(--accent-dark);margin:0 0 3px;}
-  .liked-item .title{font-size:0.95rem;font-weight:600;margin:0;}
-  .liked-item .author{font-size:0.8rem;color:var(--ink-faint);margin:2px 0 0;}
-  .comment-item .ctx{font-size:0.82rem;color:var(--ink-faint);margin:0 0 4px;}
-  .comment-item .mine{font-size:0.9rem;margin:0;}
-  .comment-item .mine b{color:var(--accent-dark);}
-  .empty-note{color:var(--ink-faint);font-size:0.86rem;text-align:center;padding:20px 0;}
+  .subtabs{display:flex;gap:6px;margin:-6px 0 14px;}
+  .subtab-btn{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-size:0.8rem;color:var(--ink-soft);}
+  .subtab-btn.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+
+  .feed-item{border-top:1px solid var(--line);padding:12px 2px;cursor:pointer;}
+  .feed-item:first-child{border-top:none;}
+  .feed-title{font-weight:600;font-size:0.94rem;margin:0;}
+  .feed-sub{font-size:0.8rem;margin:3px 0 6px;}
+  .feed-body{font-size:0.88rem;margin:0;white-space:pre-wrap;color:var(--ink);}
+  .empty-note{color:var(--ink-faint);font-size:0.86rem;text-align:center;padding:22px 0;}
+
+  .theme-swatches{display:flex;gap:10px;margin-top:6px;}
+  .swatch{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);}
 </style>
 </head>
 <body>
@@ -84,8 +92,16 @@
   <h1>마이페이지</h1>
 </div>
 
+<nav class="tabs" id="tabs">
+  <button class="tab-btn active" data-tab="profile">프로필</button>
+  <button class="tab-btn" data-tab="myposts">내가 쓴 글</button>
+  <button class="tab-btn" data-tab="liked">좋아요</button>
+  <button class="tab-btn" data-tab="account">내 계정</button>
+  <button class="tab-btn" data-tab="settings">설정</button>
+</nav>
+
 <main id="pageBody">
-  <!-- JS로 내용을 채워요 -->
+  <!-- JS로 채워요 -->
 </main>
 
 <script src="common.js"></script>
@@ -96,7 +112,12 @@ window.addEventListener('pageshow', (e)=>{
   if(e.persisted) location.reload();
 });
 
+function initial(str){ return (str || '').trim().slice(0,1) || '?'; }
+function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+function getMyMember(){ return getCurrentMemberFull(); }
+
 if(!authState || authState.isAdmin || !authState.member){
+  document.getElementById('tabs').style.display = 'none';
   document.getElementById('pageBody').innerHTML = `
     <section class="card">
       <h2>마이페이지는 학생·선생님 계정 전용이에요</h2>
@@ -107,19 +128,38 @@ if(!authState || authState.isAdmin || !authState.member){
   initPage();
 }
 
-function initial(str){ return (str || '').trim().slice(0,1) || '?'; }
-function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+function initPage(){
+  document.getElementById('pageBody').innerHTML = `
+    <div class="panel active" id="panel-profile"></div>
+    <div class="panel" id="panel-myposts"></div>
+    <div class="panel" id="panel-liked"></div>
+    <div class="panel" id="panel-account"></div>
+    <div class="panel" id="panel-settings"></div>
+  `;
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
 
-function getMyMember(){
-  return getCurrentMemberFull();
+  renderProfileTab();
+  renderMyPostsTab();
+  renderLikedTab();
+  renderAccountTab();
+  renderSettingsTab();
 }
 
-function initPage(){
-  const body = document.getElementById('pageBody');
-  body.innerHTML = `
-    <section class="card" id="profileCard">
+/* ================= 프로필 ================= */
+function renderProfileTab(){
+  const m = getMyMember();
+  const panel = document.getElementById('panel-profile');
+  panel.innerHTML = `
+    <section class="card">
       <h2>프로필</h2>
-      <p class="sub">게시판에서 보여질 사진과 아이디예요. 실제 이름은 관리자만 확인할 수 있어요.</p>
+      <p class="sub">게시판에서 보여질 사진과 아이디예요. 다른 학생에게는 이 아이디만 보이고, 실제 이름은 관리자만 확인할 수 있어요.</p>
       <div class="profile-row">
         <div class="avatar-big" id="avatarPreview"></div>
         <div class="avatar-actions">
@@ -130,54 +170,16 @@ function initPage(){
       <div class="field">
         <label for="nicknameInput">아이디 (게시판 닉네임)</label>
         <input type="text" id="nicknameInput" maxlength="12">
-        <p class="helper">기본값은 로그인할 때 쓴 이름이에요. 원하는 아이디로 바꿀 수 있어요.</p>
+        <p class="helper">기본값은 로그인할 때 쓴 이름이에요.</p>
       </div>
       <p class="success" id="profileSuccess">저장했어요.</p>
-      <button type="button" class="btn-primary" id="profileSaveBtn">저장하기</button>
-    </section>
-
-    <section class="card" id="likedCard">
-      <h2>좋아요 누른 글</h2>
-      <p class="sub">하트를 누른 책 소개 글이에요. 클릭하면 글로 이동해요.</p>
-      <div id="likedList"></div>
-    </section>
-
-    <section class="card" id="accountCard">
-      <h2>내 계정</h2>
-      <p class="sub">로그인 정보예요.</p>
-      <div class="pw-line"><span>학번</span><b id="acctId">-</b></div>
-      <div class="pw-line"><span>이름</span><b id="acctName">-</b></div>
-      <div class="pw-line"><span>비밀번호</span><span class="dots">••••</span></div>
-      <div class="divider-dashed"></div>
-      <div class="field"><label for="curPw">현재 비밀번호</label><input type="password" id="curPw"></div>
-      <div class="field"><label for="newPw">바꿀 비밀번호</label><input type="password" id="newPw"></div>
-      <div class="field"><label for="confirmPw">바꿀 비밀번호 확인</label><input type="password" id="confirmPw"></div>
-      <p class="error" id="pwError"></p>
-      <p class="success" id="pwSuccess">비밀번호를 바꿨어요.</p>
-      <button type="button" class="btn-primary" id="pwChangeBtn">비밀번호 바꾸기</button>
-    </section>
-
-    <section class="card" id="commentsCard">
-      <h2>내가 쓴 댓글</h2>
-      <p class="sub">클릭하면 해당 게시글로 이동해요.</p>
-      <div id="commentsList"></div>
+      <button type="button" class="btn-ghost" id="profileSaveBtn">저장하기</button>
     </section>
   `;
 
-  renderProfile();
-  renderLiked();
-  renderAccount();
-  renderMyComments();
-  wirePasswordForm();
-}
-
-/* ---------- 프로필 ---------- */
-function renderProfile(){
-  const m = getMyMember();
   const preview = document.getElementById('avatarPreview');
   preview.innerHTML = m.photo ? `<img src="${m.photo}" alt="">` : initial(m.nickname || m.name);
   document.getElementById('nicknameInput').value = m.nickname || m.name;
-
   let pendingPhoto = m.photo || '';
 
   document.getElementById('photoInput').addEventListener('change', (e)=>{
@@ -201,97 +203,201 @@ function renderProfile(){
     const successEl = document.getElementById('profileSuccess');
     successEl.style.display = 'block';
     setTimeout(()=> successEl.style.display = 'none', 1800);
+    renderMyPostsTab(); renderLikedTab(); // 닉네임 바뀐 걸 다른 탭에도 반영
   });
 }
 
-/* ---------- 좋아요 누른 글 ---------- */
-function renderLiked(){
+/* ================= 내가 쓴 글 (게시글 + 댓글) ================= */
+function goToPost(id){ location.href = 'books.html?post=' + id; }
+
+function renderMyPostsTab(){
   const m = getMyMember();
   const key = actorKeyFromMember(m);
-  const posts = loadPosts().filter(p => p.likes.includes(key));
-  const wrap = document.getElementById('likedList');
-  if(posts.length === 0){
-    wrap.innerHTML = '<p class="empty-note">아직 좋아요를 누른 글이 없어요.</p>';
-    return;
-  }
-  wrap.innerHTML = posts.map(p => `
-    <button type="button" class="liked-item" data-post="${p.id}">
-      <p class="cat">${escapeHtml(p.categoryCode)} ${escapeHtml(p.categoryLabel)}</p>
-      <p class="title">${escapeHtml(p.title)}</p>
-      <p class="author">${escapeHtml(p.author)} 지음 · ✍️ ${escapeHtml(resolveActorName(p.authorKey))}</p>
-    </button>
-  `).join('');
-  wrap.querySelectorAll('[data-post]').forEach(el=>{
-    el.addEventListener('click', ()=> location.href = 'books.html?post=' + el.dataset.post);
+  const posts = loadPosts();
+  const myPosts = posts.filter(p => p.authorKey === key);
+  const myComments = [];
+  posts.forEach(p=>{
+    p.comments.filter(c => c.authorKey === key).forEach(c=> myComments.push({post:p, comment:c}));
+  });
+  myComments.sort((a,b)=> b.comment.createdAt - a.comment.createdAt);
+
+  const panel = document.getElementById('panel-myposts');
+  panel.innerHTML = `
+    <section class="card">
+      <h2>✍️ 내가 쓴 게시글</h2>
+      <p class="sub">${myPosts.length}개</p>
+      <div id="myPostsList">
+        ${myPosts.length ? myPosts.map(p => `
+          <div class="feed-item" data-post="${p.id}">
+            <p class="feed-title">${escapeHtml(p.title)} - ${escapeHtml(p.author)}</p>
+            <p class="feed-sub dim">나</p>
+            <p class="feed-body">${escapeHtml(p.description)}</p>
+          </div>
+        `).join('') : '<p class="empty-note">아직 쓴 게시글이 없어요.</p>'}
+      </div>
+    </section>
+    <section class="card">
+      <h2>💬 내가 쓴 댓글</h2>
+      <p class="sub">${myComments.length}개</p>
+      <div id="myCommentsList">
+        ${myComments.length ? myComments.map(({post, comment}) => `
+          <div class="feed-item" data-post="${post.id}">
+            <p class="feed-title">${escapeHtml(post.title)} - ${escapeHtml(post.author)}</p>
+            <p class="feed-sub dim">${escapeHtml(resolveActorName(post.authorKey))}</p>
+            <p class="feed-body"><b>나</b> : ${escapeHtml(comment.text)}</p>
+          </div>
+        `).join('') : '<p class="empty-note">아직 쓴 댓글이 없어요.</p>'}
+      </div>
+    </section>
+  `;
+  panel.querySelectorAll('[data-post]').forEach(el=> el.addEventListener('click', ()=> goToPost(el.dataset.post)));
+}
+
+/* ================= 좋아요 (게시글 + 댓글, 서브탭) ================= */
+function renderLikedTab(){
+  const m = getMyMember();
+  const key = actorKeyFromMember(m);
+  const posts = loadPosts();
+  const likedPosts = posts.filter(p => p.likes.includes(key));
+  const likedComments = [];
+  posts.forEach(p=>{
+    p.comments.filter(c => (c.likes || []).includes(key)).forEach(c=> likedComments.push({post:p, comment:c}));
+  });
+
+  const panel = document.getElementById('panel-liked');
+  panel.innerHTML = `
+    <section class="card">
+      <h2>❤️ 좋아요</h2>
+      <div class="subtabs">
+        <button class="subtab-btn active" data-sub="all">전체</button>
+        <button class="subtab-btn" data-sub="posts">게시글 ${likedPosts.length}</button>
+        <button class="subtab-btn" data-sub="comments">댓글 ${likedComments.length}</button>
+      </div>
+      <div id="likedPostsBlock">
+        <p class="sub" style="margin-bottom:6px;">좋아요 누른 게시글</p>
+        ${likedPosts.length ? likedPosts.map(p => `
+          <div class="feed-item" data-post="${p.id}">
+            <p class="feed-title">${escapeHtml(p.title)} - ${escapeHtml(p.author)}</p>
+            <p class="feed-sub dim">${escapeHtml(resolveActorName(p.authorKey))}</p>
+            <p class="feed-body">${escapeHtml(p.description)}</p>
+          </div>
+        `).join('') : '<p class="empty-note">좋아요 누른 게시글이 없어요.</p>'}
+      </div>
+      <div id="likedCommentsBlock">
+        <p class="sub" style="margin:14px 0 6px;">좋아요 누른 댓글</p>
+        ${likedComments.length ? likedComments.map(({post, comment}) => `
+          <div class="feed-item" data-post="${post.id}">
+            <p class="feed-title">${escapeHtml(post.title)} - ${escapeHtml(post.author)}</p>
+            <p class="feed-sub dim">${escapeHtml(resolveActorName(post.authorKey))}</p>
+            <p class="feed-body">${escapeHtml(resolveActorName(comment.authorKey))} : ${escapeHtml(comment.text)}</p>
+          </div>
+        `).join('') : '<p class="empty-note">좋아요 누른 댓글이 없어요.</p>'}
+      </div>
+    </section>
+  `;
+  panel.querySelectorAll('[data-post]').forEach(el=> el.addEventListener('click', ()=> goToPost(el.dataset.post)));
+
+  const postsBlock = document.getElementById('likedPostsBlock');
+  const commentsBlock = document.getElementById('likedCommentsBlock');
+  panel.querySelectorAll('.subtab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      panel.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const sub = btn.dataset.sub;
+      postsBlock.style.display = (sub === 'all' || sub === 'posts') ? '' : 'none';
+      commentsBlock.style.display = (sub === 'all' || sub === 'comments') ? '' : 'none';
+    });
   });
 }
 
-/* ---------- 내 계정 ---------- */
-function renderAccount(){
+/* ================= 내 계정 ================= */
+function renderAccountTab(){
   const m = getMyMember();
-  document.getElementById('acctId').textContent = m.role === 'teacher' ? '(선생님)' : m.id;
-  document.getElementById('acctName').textContent = m.name;
+  const panel = document.getElementById('panel-account');
+  panel.innerHTML = `
+    <section class="card">
+      <h2>내 계정</h2>
+      <div class="pw-line"><span>학번</span><b>${m.role === 'teacher' ? '(선생님)' : escapeHtml(m.id)}</b></div>
+      <div class="pw-line"><span>이름</span><b>${escapeHtml(m.name)}</b></div>
+      <div class="pw-line"><span>현재 비밀번호</span><span class="dots">••••</span></div>
+      <div class="pw-actions" id="pwArea">
+        <button type="button" class="btn-ghost" id="pwOpenBtn">비밀번호 바꾸기</button>
+      </div>
+    </section>
+  `;
+  document.getElementById('pwOpenBtn').addEventListener('click', renderPwStep1);
 }
 
-function wirePasswordForm(){
-  const btn = document.getElementById('pwChangeBtn');
+function renderPwStep1(){
+  const area = document.getElementById('pwArea');
+  area.innerHTML = `
+    <div class="field"><label for="curPw">현재 비밀번호 입력</label><input type="password" id="curPw"></div>
+    <p class="error" id="pwStep1Error">현재 비밀번호가 일치하지 않아요.</p>
+    <button type="button" class="btn-primary" id="pwConfirmBtn">확인</button>
+  `;
   const update = wireReadyButton(
-    btn,
-    ()=> document.getElementById('curPw').value && document.getElementById('newPw').value && document.getElementById('confirmPw').value,
-    [document.getElementById('curPw'), document.getElementById('newPw'), document.getElementById('confirmPw')]
+    document.getElementById('pwConfirmBtn'),
+    ()=> !!document.getElementById('curPw').value,
+    [document.getElementById('curPw')]
   );
-  btn.addEventListener('click', ()=>{
-    const err = document.getElementById('pwError');
-    const ok = document.getElementById('pwSuccess');
-    err.style.display = 'none'; ok.style.display = 'none';
+  document.getElementById('pwConfirmBtn').addEventListener('click', ()=>{
     const m = getMyMember();
     const cur = document.getElementById('curPw').value;
+    const storedPw = m.password || localStorage.getItem(LS_STUDENT_PW);
+    if(cur !== storedPw){
+      document.getElementById('pwStep1Error').style.display = 'block';
+      return;
+    }
+    renderPwStep2();
+  });
+}
+
+function renderPwStep2(){
+  const area = document.getElementById('pwArea');
+  area.innerHTML = `
+    <div class="field"><label for="newPw">새 비밀번호</label><input type="password" id="newPw"></div>
+    <div class="field"><label for="confirmPw">비밀번호 확인</label><input type="password" id="confirmPw"></div>
+    <p class="error" id="pwStep2Error"></p>
+    <p class="success" id="pwStep2Success">비밀번호를 바꿨어요.</p>
+    <button type="button" class="btn-primary" id="pwSaveBtn">저장</button>
+  `;
+  wireReadyButton(
+    document.getElementById('pwSaveBtn'),
+    ()=> document.getElementById('newPw').value && document.getElementById('confirmPw').value,
+    [document.getElementById('newPw'), document.getElementById('confirmPw')]
+  );
+  document.getElementById('pwSaveBtn').addEventListener('click', ()=>{
+    const err = document.getElementById('pwStep2Error');
+    err.style.display = 'none';
     const nw = document.getElementById('newPw').value;
     const cf = document.getElementById('confirmPw').value;
-    const storedPw = m.password || localStorage.getItem(LS_STUDENT_PW);
-    if(cur !== storedPw){ err.textContent = '현재 비밀번호가 일치하지 않아요.'; err.style.display = 'block'; return; }
-    if(nw !== cf){ err.textContent = '바꿀 비밀번호가 서로 달라요.'; err.style.display = 'block'; return; }
-    if(nw.length < 1){ err.textContent = '새 비밀번호를 입력해주세요.'; err.style.display = 'block'; return; }
+    if(nw !== cf){ err.textContent = '비밀번호가 서로 달라요.'; err.style.display = 'block'; return; }
+    if(!nw){ err.textContent = '새 비밀번호를 입력해주세요.'; err.style.display = 'block'; return; }
+    const m = getMyMember();
     const members = loadMembers();
     const idx = members.findIndex(mm => mm.role === m.role && mm.name === m.name && (m.role === 'teacher' || mm.id === m.id));
     if(idx === -1) return;
     members[idx].password = nw;
     saveMembers(members);
-    ok.style.display = 'block';
-    document.getElementById('curPw').value = '';
-    document.getElementById('newPw').value = '';
-    document.getElementById('confirmPw').value = '';
-    update();
+    document.getElementById('pwStep2Success').style.display = 'block';
+    setTimeout(renderAccountTab, 1400);
   });
 }
 
-/* ---------- 내가 쓴 댓글 ---------- */
-function renderMyComments(){
-  const m = getMyMember();
-  const key = actorKeyFromMember(m);
-  const posts = loadPosts();
-  const mine = [];
-  posts.forEach(p=>{
-    p.comments.filter(c => c.authorKey === key).forEach(c=>{
-      mine.push({ post: p, comment: c });
-    });
-  });
-  mine.sort((a,b)=> b.comment.createdAt - a.comment.createdAt);
-
-  const wrap = document.getElementById('commentsList');
-  if(mine.length === 0){
-    wrap.innerHTML = '<p class="empty-note">아직 남긴 댓글이 없어요.</p>';
-    return;
-  }
-  wrap.innerHTML = mine.map(({post, comment}) => `
-    <button type="button" class="comment-item" data-post="${post.id}">
-      <p class="ctx">${escapeHtml(post.title)} - ${escapeHtml(resolveActorName(post.authorKey))}</p>
-      <p class="mine"><b>나</b> : ${escapeHtml(comment.text)}</p>
-    </button>
-  `).join('');
-  wrap.querySelectorAll('[data-post]').forEach(el=>{
-    el.addEventListener('click', ()=> location.href = 'books.html?post=' + el.dataset.post);
-  });
+/* ================= 설정 (테마 등) ================= */
+function renderSettingsTab(){
+  const panel = document.getElementById('panel-settings');
+  panel.innerHTML = `
+    <section class="card">
+      <h2>🎨 테마</h2>
+      <p class="sub">원하는 색 조합을 알려주시면 그대로 적용해드릴게요. 지금은 준비 중이에요.</p>
+      <div class="theme-swatches">
+        <span class="swatch" style="background:#C9B79C;"></span>
+        <span class="swatch" style="background:#A9926F;"></span>
+        <span class="swatch" style="background:#7A8B6F;"></span>
+      </div>
+    </section>
+  `;
 }
 </script>
 </body>

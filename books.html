@@ -399,8 +399,9 @@
 <div class="overlay hidden" id="postOverlay">
   <div class="modal">
     <button class="modal-close" data-close="postOverlay">×</button>
-    <h2>책 소개 쓰기</h2>
+    <h2 id="postFormTitle">책 소개 쓰기</h2>
     <form id="postForm">
+      <input type="hidden" id="pId" value="">
       <div class="field"><label for="pTitle">책 제목</label><input type="text" id="pTitle" required></div>
       <div class="field"><label for="pAuthor">지은이</label><input type="text" id="pAuthor" required></div>
       <div class="field">
@@ -424,6 +425,14 @@
 
 <script src="common.js"></script>
 <script>
+(function checkCommonJs(){
+  const required = ['DEWEY_CATEGORIES','actorKeyFromAuth','actorKeyFromMember','resolveActorName','resolveActorMember','createPost','updatePost','toggleLike','toggleCommentLike','addComment','loadPosts','savePosts'];
+  const missing = required.filter(name => typeof window[name] === 'undefined');
+  if(missing.length){
+    document.body.insertAdjacentHTML('afterbegin', `<div style="background:#B0725E;color:#fff;padding:14px 20px;font-size:0.85rem;text-align:center;">⚠️ common.js가 최신 버전이 아니에요. common.js 파일을 다시 올려주세요. (누락: ${missing.join(', ')})</div>`);
+  }
+})();
+
 const PALETTE = ['#8C7A66','#A9926F','#C9B79C','#7C6A52','#B9A386','#9C8567','#D9CBB3','#6E5D45','#B5A688'];
 
 const SEED_BOOKS = [
@@ -473,10 +482,14 @@ function renderAuthArea(){
   if(myMember){
     const roleLabel = myMember.role === 'teacher' ? '선생님' : '학생';
     area.innerHTML = `
-      <div class="profile-chip">
+      <div class="profile-chip" id="profileChip" style="cursor:pointer;">
         <div class="profile-avatar">${myMember.photo ? `<img src="${myMember.photo}" alt="">` : initial(myMember.nickname || myMember.name)}</div>
-        <div class="profile-text"><a href="mypage.html" style="text-decoration:none;color:inherit;"><b>${escapeHtml(myMember.nickname || myMember.name)}</b></a> · ${roleLabel}<br><button class="profile-logout" id="memberLogoutBtn">로그아웃</button></div>
+        <div class="profile-text"><b>${escapeHtml(myMember.nickname || myMember.name)}</b> · ${roleLabel}<br><button class="profile-logout" id="memberLogoutBtn">로그아웃</button></div>
       </div>`;
+    document.getElementById('profileChip').addEventListener('click', (e)=>{
+      if(e.target.id === 'memberLogoutBtn') return;
+      location.href = 'mypage.html';
+    });
     document.getElementById('memberLogoutBtn').addEventListener('click', ()=>{
       clearCurrentMember();
       location.href = 'index.html';
@@ -489,7 +502,7 @@ function renderAuthArea(){
 renderAuthArea();
 document.getElementById('adminBar').classList.toggle('hidden', !isAdmin);
 document.getElementById('addBtn').classList.toggle('hidden', !isAdmin);
-document.getElementById('postFab').classList.toggle('hidden', !(isAdmin || myMember));
+document.getElementById('postFab').classList.toggle('hidden', !myMember);
 
 // 로그아웃 후 브라우저 "뒤로가기"로 이 페이지가 캐시에서 그대로 복원되면
 // 로그인 체크가 다시 실행되지 않아 "안 튕기는" 것처럼 보일 수 있어요. 그런 경우 새로고침해서 다시 검사해요.
@@ -513,7 +526,7 @@ function colorForCategory(cat){
 }
 function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
-function getCategories(){ return ['전체', ...Array.from(new Set(books.map(b=>b.category)))]; }
+function getCategories(){ return ['전체', ...DEWEY_CATEGORIES.map(c => `${c.code} ${c.label}`)]; }
 
 function renderFilters(){
   const bar = document.getElementById('filterTabs');
@@ -633,7 +646,7 @@ function render(){
   renderBoard();
   document.getElementById('adminBar').classList.toggle('hidden', !isAdmin);
   document.getElementById('addBtn').classList.toggle('hidden', !isAdmin);
-  document.getElementById('postFab').classList.toggle('hidden', !(isAdmin || myMember));
+  document.getElementById('postFab').classList.toggle('hidden', !myMember);
   document.getElementById('favToggle').classList.toggle('active', showFavOnly);
 }
 
@@ -922,7 +935,7 @@ function timeAgo(ts){
 }
 
 function renderBoard(){
-  posts = loadPosts();
+  posts = loadPosts().slice().sort((a,b)=> (b.likes.length - a.likes.length) || (b.createdAt - a.createdAt));
   const list = document.getElementById('postList');
   const empty = document.getElementById('postEmpty');
   list.innerHTML = '';
@@ -972,18 +985,39 @@ function handleToggleLike(postId){
 
 function renderCommentNode(post, comment, depth){
   const children = post.comments.filter(c => c.parentId === comment.id);
+  const cLikes = comment.likes || [];
+  const cLiked = myActorKey && cLikes.includes(myActorKey);
   return `
     <div class="comment" style="margin-left:${Math.min(depth,4)*18}px">
       <p class="comment-author">${actorDisplayHtml(comment.authorKey)}</p>
       <p class="comment-text">${escapeHtml(comment.text)}</p>
-      <button class="comment-reply-btn" data-reply-toggle="${comment.id}">답글 달기</button>
-      <div class="reply-box hidden" id="replyBox-${comment.id}">
-        <textarea id="replyInput-${comment.id}" placeholder="답글을 입력하세요"></textarea>
-        <button data-reply-submit="${comment.id}" data-post="${post.id}">등록</button>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="heart-btn ${cLiked ? 'active' : ''}" data-comment-like="${comment.id}" style="font-size:0.78rem;">${cLiked ? '♥' : '♡'} ${cLikes.length}</button>
+        <button class="comment-reply-btn" data-reply-toggle="${comment.id}" style="margin:0;">답글 달기</button>
       </div>
+      <form class="reply-box hidden" id="replyBox-${comment.id}" data-parent="${comment.id}">
+        <textarea id="replyInput-${comment.id}" placeholder="답글을 입력하세요" required></textarea>
+        <button type="submit">등록</button>
+      </form>
       ${children.map(ch=>renderCommentNode(post, ch, depth+1)).join('')}
     </div>
   `;
+}
+
+function openPostForm(post){
+  const form = document.getElementById('postForm');
+  form.reset();
+  document.getElementById('postFormTitle').textContent = post ? '책 소개 수정' : '책 소개 쓰기';
+  document.getElementById('postSubmitBtn').textContent = post ? '수정하기' : '게시하기';
+  document.getElementById('pId').value = post ? post.id : '';
+  if(post){
+    document.getElementById('pTitle').value = post.title;
+    document.getElementById('pAuthor').value = post.author;
+    pCategorySelect.value = post.categoryCode;
+    document.getElementById('pDesc').value = post.description;
+  }
+  updatePostReady();
+  showOverlay('postOverlay');
 }
 
 function openPostDetail(id, skipShow){
@@ -993,7 +1027,7 @@ function openPostDetail(id, skipShow){
   const content = document.getElementById('postDetailContent');
   const liked = myActorKey && post.likes.includes(myActorKey);
   const roots = post.comments.filter(c => !c.parentId);
-  const canDelete = isAdmin || (myActorKey && myActorKey === post.authorKey);
+  const canManage = isAdmin || (myActorKey && myActorKey === post.authorKey);
 
   content.innerHTML = `
     <button class="modal-close" data-close="postDetailOverlay">×</button>
@@ -1003,7 +1037,7 @@ function openPostDetail(id, skipShow){
     <p class="post-detail-desc">${escapeHtml(post.description)}</p>
     <div class="post-detail-actions">
       <button class="heart-btn ${liked ? 'active' : ''}" id="postDetailLikeBtn">${liked ? '♥' : '♡'} 좋아요 ${post.likes.length}</button>
-      ${canDelete ? `<button class="post-delete-btn" id="postDeleteBtn">이 글 삭제</button>` : ''}
+      ${canManage ? `<button class="post-delete-btn" id="postEditBtn" style="color:var(--accent-dark);margin-left:auto;">수정</button><button class="post-delete-btn" id="postDeleteBtn">삭제</button>` : ''}
     </div>
     ${isAdmin ? `<p class="helper" style="margin:-10px 0 16px;">❤️ 좋아요 누른 사람: ${post.likes.length ? post.likes.map(k=>actorDisplayHtml(k)).join(', ') : '아직 없음'}</p>` : ''}
     <p class="comments-title">댓글 ${post.comments.length}개</p>
@@ -1011,15 +1045,21 @@ function openPostDetail(id, skipShow){
       ${roots.length ? roots.map(c=>renderCommentNode(post, c, 0)).join('') : '<p class="comment-empty">아직 댓글이 없어요. 첫 댓글을 남겨보세요!</p>'}
     </div>
     ${myActorKey ? `
-      <div class="comment-form">
-        <textarea id="newCommentInput" placeholder="댓글을 입력하세요"></textarea>
-        <button id="newCommentBtn">등록</button>
-      </div>
+      <form class="comment-form" id="newCommentForm">
+        <textarea id="newCommentInput" placeholder="댓글을 입력하세요" required></textarea>
+        <button type="submit">등록</button>
+      </form>
     ` : `<p class="helper">댓글은 로그인 후 남길 수 있어요.</p>`}
   `;
 
   document.querySelector('#postDetailContent .modal-close').addEventListener('click', ()=>hideOverlay('postDetailOverlay'));
   document.getElementById('postDetailLikeBtn').addEventListener('click', ()=> handleToggleLike(post.id));
+
+  const editBtn = document.getElementById('postEditBtn');
+  if(editBtn) editBtn.addEventListener('click', ()=>{
+    hideOverlay('postDetailOverlay');
+    openPostForm(post);
+  });
   const delBtn = document.getElementById('postDeleteBtn');
   if(delBtn) delBtn.addEventListener('click', ()=>{
     if(!confirm('이 글을 삭제할까요? 되돌릴 수 없어요.')) return;
@@ -1028,26 +1068,36 @@ function openPostDetail(id, skipShow){
     renderBoard();
   });
 
+  content.querySelectorAll('[data-comment-like]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(!myActorKey){ alert('좋아요는 로그인 후 이용할 수 있어요.'); return; }
+      toggleCommentLike(post.id, btn.dataset.commentLike, myActorKey);
+      openPostDetail(post.id, true);
+    });
+  });
   content.querySelectorAll('[data-reply-toggle]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.getElementById('replyBox-' + btn.dataset.replyToggle).classList.toggle('hidden');
     });
   });
-  content.querySelectorAll('[data-reply-submit]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
+  content.querySelectorAll('.reply-box').forEach(form=>{
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
       if(!myActorKey){ alert('답글은 로그인 후 남길 수 있어요.'); return; }
-      const commentId = btn.dataset.replySubmit;
-      const text = document.getElementById('replyInput-' + commentId).value.trim();
+      const parentId = form.dataset.parent;
+      const input = form.querySelector('textarea');
+      const text = input.value.trim();
       if(!text) return;
-      addComment(post.id, text, myActorKey, commentId);
+      addComment(post.id, text, myActorKey, parentId);
       openPostDetail(post.id, true);
       renderBoard();
     });
   });
 
-  const newCommentBtn = document.getElementById('newCommentBtn');
-  if(newCommentBtn){
-    newCommentBtn.addEventListener('click', ()=>{
+  const newCommentForm = document.getElementById('newCommentForm');
+  if(newCommentForm){
+    newCommentForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
       const input = document.getElementById('newCommentInput');
       const text = input.value.trim();
       if(!text) return;
@@ -1060,11 +1110,7 @@ function openPostDetail(id, skipShow){
   if(!skipShow) showOverlay('postDetailOverlay');
 }
 
-document.getElementById('postFab').addEventListener('click', ()=>{
-  document.getElementById('postForm').reset();
-  updatePostReady();
-  showOverlay('postOverlay');
-});
+document.getElementById('postFab').addEventListener('click', ()=> openPostForm(null));
 
 const updatePostReady = wireReadyButton(
   document.getElementById('postSubmitBtn'),
@@ -1075,15 +1121,20 @@ const updatePostReady = wireReadyButton(
 document.getElementById('postForm').addEventListener('submit', (e)=>{
   e.preventDefault();
   if(!myActorKey){ alert('로그인 후 이용할 수 있어요.'); return; }
+  const id = document.getElementById('pId').value;
   const categoryCode = pCategorySelect.value;
   const categoryLabel = (DEWEY_CATEGORIES.find(c=>c.code === categoryCode) || {}).label || '';
-  createPost({
+  const data = {
     title: document.getElementById('pTitle').value.trim(),
     author: document.getElementById('pAuthor').value.trim(),
     categoryCode, categoryLabel,
-    description: document.getElementById('pDesc').value.trim(),
-    authorKey: myActorKey
-  });
+    description: document.getElementById('pDesc').value.trim()
+  };
+  if(id){
+    updatePost(id, data);
+  } else {
+    createPost({ ...data, authorKey: myActorKey });
+  }
   hideOverlay('postOverlay');
   renderBoard();
 });

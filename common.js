@@ -124,6 +124,18 @@ function createPost({title, author, categoryCode, categoryLabel, description, au
   savePosts(posts);
   return post;
 }
+function updatePost(id, {title, author, categoryCode, categoryLabel, description}){
+  const posts = loadPosts();
+  const post = posts.find(p => p.id === id);
+  if(!post) return null;
+  post.title = title;
+  post.author = author;
+  post.categoryCode = categoryCode;
+  post.categoryLabel = categoryLabel;
+  post.description = description;
+  savePosts(posts);
+  return post;
+}
 function deletePostById(id){
   const posts = loadPosts().filter(p => p.id !== id);
   savePosts(posts);
@@ -137,6 +149,19 @@ function toggleLike(postId, actorKey){
   savePosts(posts);
   return post;
 }
+// 댓글도 좋아요를 누를 수 있어요. (옛날 댓글에는 likes가 없을 수 있어서 없으면 만들어줘요)
+function toggleCommentLike(postId, commentId, actorKey){
+  const posts = loadPosts();
+  const post = posts.find(p => p.id === postId);
+  if(!post || !actorKey) return null;
+  const comment = post.comments.find(c => c.id === commentId);
+  if(!comment) return null;
+  if(!comment.likes) comment.likes = [];
+  const i = comment.likes.indexOf(actorKey);
+  if(i === -1) comment.likes.push(actorKey); else comment.likes.splice(i,1);
+  savePosts(posts);
+  return post;
+}
 // parentId가 있으면 답글(대댓글), 없으면 일반 댓글이에요. 답글은 계속 중첩될 수 있어요.
 function addComment(postId, text, actorKey, parentId){
   const posts = loadPosts();
@@ -145,7 +170,8 @@ function addComment(postId, text, actorKey, parentId){
   const comment = {
     id: 'c' + Date.now() + Math.floor(Math.random()*1000),
     authorKey, text, createdAt: Date.now(),
-    parentId: parentId || null
+    parentId: parentId || null,
+    likes: []
   };
   post.comments.push(comment);
   savePosts(posts);
