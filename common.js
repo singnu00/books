@@ -381,3 +381,87 @@ function wireReadyButton(btn, checkFn, watchEls){
   return update;
 }
 
+/* ---------- 건의사항 / 문제 발견 ---------- */
+const LS_SUGGESTIONS = 'rk_suggestions';
+const SUGGESTION_TYPES = ['문제 발견', '건의사항', '기타'];
+
+function loadSuggestions(){
+  try{ const raw = localStorage.getItem(LS_SUGGESTIONS); if(raw) return JSON.parse(raw); }catch(e){}
+  return [];
+}
+function saveSuggestions(list){
+  try{ localStorage.setItem(LS_SUGGESTIONS, JSON.stringify(list)); }catch(e){}
+}
+function createSuggestion({type, title, body, authorKey}){
+  const list = loadSuggestions();
+  const item = {
+    id: 's' + Date.now() + Math.floor(Math.random()*1000),
+    type, title, body, authorKey,
+    createdAt: Date.now(),
+    done: false
+  };
+  list.unshift(item);
+  saveSuggestions(list);
+  return item;
+}
+function setSuggestionDone(id, done){
+  const list = loadSuggestions();
+  const item = list.find(s => s.id === id);
+  if(!item) return;
+  item.done = !!done;
+  saveSuggestions(list);
+}
+function deleteSuggestion(id){
+  saveSuggestions(loadSuggestions().filter(s => s.id !== id));
+}
+
+// 로그인한 사람에게만, 화면 오른쪽 옆에 "건의사항" 탭을 붙여줘요. (로그인/건의사항 페이지에서는 숨겨요)
+(function injectSuggestTab(){
+  const page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  if(page === 'login.html' || page === 'suggest.html') return;
+
+  function add(){
+    let isAdmin = false;
+    try{ isAdmin = localStorage.getItem(LS_LOGGED_IN) === 'true'; }catch(e){}
+    if(!isAdmin && !getCurrentMemberFull()) return;
+    if(document.getElementById('rk-suggest-tab')) return;
+
+    const style = document.createElement('style');
+    style.textContent = `
+      #rk-suggest-tab{
+        position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:30;
+        writing-mode:vertical-rl;letter-spacing:0.12em;
+        padding:16px 9px;border-radius:10px 0 0 10px;
+        background:var(--accent-dark,#A9926F);color:#fff;
+        font-family:inherit;font-size:0.82rem;text-decoration:none;
+        box-shadow:-2px 2px 10px rgba(0,0,0,0.12);
+      }
+      #rk-suggest-tab:hover{background:var(--ink,#55493C);}
+      #rk-suggest-tab .rk-badge{
+        display:inline-block;writing-mode:horizontal-tb;letter-spacing:0;
+        margin-top:6px;min-width:18px;padding:1px 5px;border-radius:999px;
+        background:#fff;color:var(--accent-dark,#A9926F);font-size:0.7rem;font-weight:600;text-align:center;
+      }
+    `;
+    document.head.appendChild(style);
+
+    const a = document.createElement('a');
+    a.id = 'rk-suggest-tab';
+    a.href = 'suggest.html';
+    a.textContent = '💌 건의사항';
+    if(isAdmin){
+      const pending = loadSuggestions().filter(s => !s.done).length;
+      if(pending > 0){
+        const badge = document.createElement('span');
+        badge.className = 'rk-badge';
+        badge.textContent = pending;
+        a.appendChild(badge);
+      }
+    }
+    document.body.appendChild(a);
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add);
+  else add();
+})();
+

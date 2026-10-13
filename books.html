@@ -138,9 +138,10 @@
   .post-writer{color:var(--ink-soft);}
   .realname-tag{color:var(--ink-faint);font-weight:400;margin-left:4px;font-size:0.92em;}
   .post-stats{display:flex;align-items:center;gap:14px;}
-  .heart-btn{background:none;border:none;font-size:0.86rem;color:var(--ink-faint);display:flex;align-items:center;gap:4px;padding:0;}
+  .heart-btn{background:none;border:none;font-size:0.86rem;line-height:1;color:var(--ink-faint);display:inline-flex;align-items:center;gap:5px;padding:4px 0;}
   .heart-btn.active{color:var(--danger);}
-  .comment-count-btn{background:none;border:none;font-size:0.86rem;color:var(--ink-faint);display:flex;align-items:center;gap:4px;padding:0;}
+  .heart-btn .h-ico{display:inline-block;line-height:1;font-size:1.12em;transform:translateY(-2px);}
+  .comment-count-btn{background:none;border:none;font-size:0.86rem;line-height:1;color:var(--ink-faint);display:inline-flex;align-items:center;gap:5px;padding:4px 0;}
 
   .fab-post{right:22px;bottom:24px;}
   .fab.fab-post{background:var(--ink);}
@@ -152,6 +153,7 @@
   .post-detail-desc{font-size:0.94rem;line-height:1.7;white-space:pre-wrap;margin:0 0 14px;}
   .post-detail-actions{display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:16px;}
   .post-delete-btn{margin-left:auto;background:none;border:none;color:var(--danger);font-size:0.78rem;text-decoration:underline;}
+  .post-delete-btn + .post-delete-btn{margin-left:10px;}
 
   .comments-title{font-size:0.9rem;color:var(--ink-soft);margin:0 0 10px;}
   .comment{padding:10px 0 4px;border-top:1px solid var(--line);}
@@ -593,7 +595,7 @@ function renderBoard(){
       <div class="post-meta">
         <span class="post-writer">✍️ ${actorDisplayHtml(post.authorKey)} · ${timeAgo(post.createdAt)}</span>
         <div class="post-stats">
-          <button class="heart-btn ${liked ? 'active' : ''}" data-like="${post.id}">${liked ? '♥' : '♡'} ${post.likes.length}</button>
+          <button class="heart-btn ${liked ? 'active' : ''}" data-like="${post.id}"><span class="h-ico">${liked ? '♥' : '♡'}</span>${post.likes.length}</button>
           <button class="comment-count-btn" data-open="${post.id}">💬 ${commentCount}</button>
         </div>
       </div>
@@ -624,7 +626,7 @@ function renderCommentNode(post, comment, depth){
       <p class="comment-author">${actorDisplayHtml(comment.authorKey)}</p>
       <p class="comment-text">${escapeHtml(comment.text)}</p>
       <div style="display:flex;align-items:center;gap:10px;">
-        <button class="heart-btn ${cLiked ? 'active' : ''}" data-comment-like="${comment.id}" style="font-size:0.78rem;">${cLiked ? '♥' : '♡'} ${cLikes.length}</button>
+        <button class="heart-btn ${cLiked ? 'active' : ''}" data-comment-like="${comment.id}" style="font-size:0.78rem;"><span class="h-ico">${cLiked ? '♥' : '♡'}</span>${cLikes.length}</button>
         <button class="comment-reply-btn" data-reply-toggle="${comment.id}" style="margin:0;">답글 달기</button>
       </div>
       <form class="reply-box hidden" id="replyBox-${comment.id}" data-parent="${comment.id}">
@@ -668,7 +670,7 @@ function openPostDetail(id, skipShow){
     <p class="post-detail-author">${escapeHtml(post.author)} 지음 · ✍️ ${actorDisplayHtml(post.authorKey)} · ${timeAgo(post.createdAt)}</p>
     <p class="post-detail-desc">${escapeHtml(post.description)}</p>
     <div class="post-detail-actions">
-      <button class="heart-btn ${liked ? 'active' : ''}" id="postDetailLikeBtn">${liked ? '♥' : '♡'} 좋아요 ${post.likes.length}</button>
+      <button class="heart-btn ${liked ? 'active' : ''}" id="postDetailLikeBtn"><span class="h-ico">${liked ? '♥' : '♡'}</span>좋아요 ${post.likes.length}</button>
       ${canManage ? `<button class="post-delete-btn" id="postEditBtn" style="color:var(--accent-dark);margin-left:auto;">수정</button><button class="post-delete-btn" id="postDeleteBtn">삭제</button>` : ''}
     </div>
     ${isAdmin ? `<p class="helper" style="margin:-10px 0 16px;">❤️ 좋아요 누른 사람: ${post.likes.length ? post.likes.map(k=>actorDisplayHtml(k)).join(', ') : '아직 없음'}</p>` : ''}
